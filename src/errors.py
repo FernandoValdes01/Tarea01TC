@@ -1,0 +1,1 @@
+"""Errores léxicos. Implementación pendiente."""
