@@ -293,7 +293,7 @@ ya existente.
 | `UNTERMINATED_STRING` | `"Juan` seguido de EOF o salto real | Se abrió `"` y no apareció una comilla doble válida antes de línea/EOF. | Descartar el fragmento hasta antes del salto o hasta EOF; no emitir `STRING`. |
 | `INVALID_ESCAPE` | `'a\q'`, `"a\'b"` | La barra inversa no está seguida por un escape permitido para ese delimitador. | Registrar el error en la barra inversa, consumir la pareja de escape y seguir buscando el cierre; si el literal cierra, no emitir un token para el literal inválido. |
 | `UNTERMINATED_BLOCK_COMMENT` | `/* comentario` | Se abrió `/*` y no apareció `*/` antes de EOF. | Registrar el error y consumir hasta EOF actualizando posiciones; no emitir tokens por el contenido. |
-| `MALFORMED_NUMBER` | `5.`, `.5`, `1.2.3` | La corrida numérica de dígitos y puntos no tiene exactamente el formato entero o real. | Consumir la corrida contigua de `[0-9.]`, registrar un error y continuar desde el primer carácter posterior. |
+| `MALFORMED_NUMBER` | `5.`, `.5`, `1.2.3`, `12abc` | La corrida que comienza como número no tiene exactamente el formato entero o real. | Consumir la corrida contigua de `[0-9.]` y, si sigue inmediatamente un sufijo `[A-Za-z0-9_]+`, incluirlo en el error; continuar desde el primer separador seguro. |
 | `INVALID_CHARACTER` | `@`, `:`, `?`, `\`, `á` fuera de comillas | No existe regla válida en la posición actual. | Registrar el carácter y consumir un carácter de entrada; continuar. `:` y `?` solo son válidos como partes de `:-` y `?-`. |
 
 Si un literal contiene varios escapes desconocidos, se registra un `INVALID_ESCAPE` por
@@ -301,9 +301,11 @@ cada escape detectado. Si además no cierra, se registra también el error de ci
 se inventa un token parcial para una cadena o átomo inválido.
 
 El detector numérico se activa cuando el cursor está en un dígito o en `.` seguido de
-un dígito. Consume la máxima corrida contigua de dígitos y puntos. Así, un punto aislado
-continúa siendo `DOT`, mientras que el punto de `5.` o `.5` queda incluido en el
-fragmento del error.
+un dígito. Consume la máxima corrida contigua de dígitos y puntos. El Prompt 03 amplía
+la recuperación: si la corrida queda seguida inmediatamente por caracteres de
+identificador, estos también se consumen para que `12abc` sea un solo error. Un punto
+posterior a ese sufijo ya es un separador seguro. Así, un punto aislado continúa siendo
+`DOT`, mientras que el punto de `5.` o `.5` queda incluido en el fragmento del error.
 
 ## 9. Posiciones y formato de token
 

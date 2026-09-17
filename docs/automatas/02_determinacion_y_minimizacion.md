@@ -43,7 +43,7 @@ engañosa.
 | 1 | Comentario de bloque `/*...*/` | `/` y `*` | Los comentarios son ignorables completos. |
 | 2 | Detector de comentario sin cierre | `/`, `*` y contenido posterior | Produce `UNTERMINATED_BLOCK_COMMENT`. |
 | 3 | Literal cerrado o su detector específico de error | tokens internos aparentes | El contenido se procesa dentro del delimitador. |
-| 4 | Detector `MALFORMED_NUMBER` | `INTEGER` y `DOT` parciales | `5.`, `.5` y `1.2.3` son un error cada uno. |
+| 4 | Detector `MALFORMED_NUMBER` | `INTEGER` y `DOT` parciales | `5.`, `.5`, `1.2.3` y el sufijo inválido de `12abc` son un error cada uno. |
 | 5 | Operador largo | su prefijo corto | Cubre `\==`, `=..`, `==`, `=<`, `>=`, `:-`, `?-`, `//`, `**`, `\+` y `-->`. |
 | 6 | `REAL` | `INTEGER` sobre el mismo prefijo | En la práctica `REAL` gana por longitud. |
 | 7 | `VARIABLE` iniciada por `_` | `_` | `_Tmp` gana por longitud. |
