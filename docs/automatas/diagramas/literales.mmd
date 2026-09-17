@@ -1,0 +1,10 @@
+stateDiagram-v2
+    direction LR
+    [*] --> l0
+    l0 --> lB: D
+    lB --> lB: SAFE_D
+    lB --> lE: barra inversa
+    lB --> lF: D
+    lE --> lB: VALID_ESCAPE_D
+    lE --> err: otro
+    state "lF / literal" as lF

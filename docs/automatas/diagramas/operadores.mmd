@@ -1,0 +1,59 @@
+stateDiagram-v2
+    direction LR
+    [*] --> o0
+    o0 --> comma: ,
+    o0 --> plus: +
+    o0 --> bang: !
+    o0 --> semi: ;
+    o0 --> lt: <
+    o0 --> minus: -
+    minus --> d2: -
+    d2 --> dcg: >
+    o0 --> star: *
+    star --> pow: *
+    o0 --> slash: /
+    slash --> idiv: /
+    o0 --> eq: =
+    eq --> eqeq: =
+    eq --> dot1: .
+    dot1 --> univ: .
+    eq --> le: <
+    o0 --> gt: >
+    gt --> ge: =
+    o0 --> bs: barra inversa
+    bs --> neq: =
+    neq --> neqq: =
+    bs --> not: +
+    o0 --> colon: :
+    colon --> clause: -
+    o0 --> question: ?
+    question --> query: -
+    o0 --> i1: i
+    i1 --> isword: s
+    o0 --> m1: m
+    m1 --> m2: o
+    m2 --> modword: d
+    state "comma / COMMA" as comma
+    state "plus / OPERATOR(+)" as plus
+    state "bang / OPERATOR(!)" as bang
+    state "semi / OPERATOR(;)" as semi
+    state "lt / OPERATOR(<)" as lt
+    state "minus / OPERATOR(-)" as minus
+    state "dcg / OPERATOR(-->)" as dcg
+    state "star / OPERATOR(*)" as star
+    state "pow / OPERATOR(**)" as pow
+    state "slash / OPERATOR(/)" as slash
+    state "idiv / OPERATOR(//)" as idiv
+    state "eq / OPERATOR(=)" as eq
+    state "eqeq / OPERATOR(==)" as eqeq
+    state "univ / OPERATOR(=..)" as univ
+    state "le / OPERATOR(=<)" as le
+    state "gt / OPERATOR(>)" as gt
+    state "ge / OPERATOR(>=)" as ge
+    state "neq / OPERATOR(\\=)" as neq
+    state "neqeq / OPERATOR(\\==)" as neqq
+    state "not / OPERATOR(\\+)" as not
+    state "clause / OPERATOR(:-)" as clause
+    state "query / OPERATOR(?-)" as query
+    state "isword / OPERATOR(is), frontera" as isword
+    state "modword / OPERATOR(mod), frontera" as modword

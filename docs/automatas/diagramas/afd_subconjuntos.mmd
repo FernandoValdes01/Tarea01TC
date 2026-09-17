@@ -1,0 +1,18 @@
+stateDiagram-v2
+    direction LR
+    [*] --> A
+    A --> B: =
+    A --> D: barra inversa
+    B --> C: =
+    D --> E: =
+    E --> F: =
+    B --> Z: barra inversa
+    C --> Z: = o barra inversa
+    D --> Z: barra inversa
+    E --> Z: barra inversa
+    F --> Z: = o barra inversa
+    Z --> Z: = o barra inversa
+    state "B / OP_EQ" as B
+    state "C / OP_EQEQ" as C
+    state "E / OP_NEQ" as E
+    state "F / OP_NEQEQ" as F

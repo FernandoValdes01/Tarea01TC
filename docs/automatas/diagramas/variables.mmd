@@ -1,0 +1,11 @@
+stateDiagram-v2
+    direction LR
+    [*] --> v0
+    v0 --> vU: UPPER
+    v0 --> v_: _
+    state "vU / VARIABLE" as vU
+    state "v_ / ANONYMOUS_VARIABLE" as v_
+    state "vN / VARIABLE" as vN
+    vU --> vU: ID_CONT
+    v_ --> vN: ID_CONT
+    vN --> vN: ID_CONT

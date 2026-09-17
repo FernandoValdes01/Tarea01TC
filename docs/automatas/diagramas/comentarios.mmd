@@ -1,0 +1,14 @@
+stateDiagram-v2
+    direction LR
+    [*] --> c0
+    state "cL / comentario de línea" as cL
+    c0 --> cL: %
+    cL --> cL: excepto CR/LF
+    c0 --> cSlash: /
+    cSlash --> cBody: *
+    cBody --> cBody: excepto *
+    cBody --> cStar: *
+    cStar --> cStar: *
+    cStar --> cBody: excepto * y /
+    cStar --> cF: /
+    state "cF / comentario de bloque" as cF

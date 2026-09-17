@@ -1,0 +1,10 @@
+stateDiagram-v2
+    direction LR
+    [*] --> n0
+    n0 --> nI: DIGIT
+    state "nI / INTEGER" as nI
+    state "nR / REAL" as nR
+    nI --> nI: DIGIT
+    nI --> nP: .
+    nP --> nR: DIGIT
+    nR --> nR: DIGIT

@@ -1,0 +1,10 @@
+stateDiagram-v2
+    direction LR
+    [*] --> a0
+    a0 --> a1: LOWER
+    a0 --> dead: otro
+    state "a1 / ATOM" as a1
+    state "∅" as dead
+    a1 --> a1: LOWER ∪ DIGIT ∪ {_}
+    a1 --> dead: otro
+    dead --> dead: Σ
