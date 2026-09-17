@@ -287,7 +287,7 @@ stateDiagram-v2
     o0 --> comma: ,
     o0 --> plus: +
     o0 --> bang: !
-    o0 --> semi: ;
+    o0 --> semi: punto y coma
     o0 --> lt: <
     o0 --> minus: -
     minus --> d2: -
@@ -307,7 +307,7 @@ stateDiagram-v2
     bs --> neq: =
     neq --> neqq: =
     bs --> not: +
-    o0 --> colon: :
+    o0 --> colon: dos puntos
     colon --> clause: -
     o0 --> question: ?
     question --> query: -

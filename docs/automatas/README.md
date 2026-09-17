@@ -11,9 +11,9 @@ No amplía el catálogo de tokens ni cambia sus expresiones regulares.
 - [`02_determinacion_y_minimizacion.md`](02_determinacion_y_minimizacion.md):
   estrategia integrada equivalente, construcción de subconjuntos para
   `{=, ==, \=, \==}` y minimización completa.
-- [`diagramas/`](diagramas/): fuentes Mermaid editables de las figuras. Los
-  documentos explican también cada figura mediante definiciones y tablas, por lo
-  que su lectura no depende del renderizador.
+- [`diagramas/`](diagramas/): fuentes Mermaid editables (`.mmd`) y figuras
+  renderizadas (`.svg`). Los documentos explican también cada figura mediante
+  definiciones y tablas, por lo que su lectura no depende del renderizador.
 
 ## Convenciones
 
@@ -40,13 +40,15 @@ concatenación.
 
 ## Regeneración de figuras
 
-Los archivos `.mmd` son las fuentes, no imágenes pre-generadas. Pueden
-renderizarse con cualquier versión de Mermaid que admita `stateDiagram-v2`. Si
-se dispone de Mermaid CLI:
+Los archivos `.mmd` son las fuentes editables. Los SVG incluidos se generaron
+con Mermaid CLI 11.17.0 y fondo blanco. Pueden regenerarse con cualquier versión
+compatible con `stateDiagram-v2`:
 
 ```bash
-mmdc -i docs/automatas/diagramas/atomos.mmd -o atomos.svg
+mmdc -i docs/automatas/diagramas/atomos.mmd \
+  -o docs/automatas/diagramas/atomos.svg \
+  -t default -b white
 ```
 
-El repositorio no incorpora Mermaid CLI ni agrega una dependencia para esta
-etapa.
+Mermaid CLI se usa como herramienta externa. El repositorio no la incorpora
+como dependencia.
