@@ -30,6 +30,13 @@ class LexemeEntry:
     original_lexeme: str
 
 
+class LexemeEntries(tuple[LexemeEntry, ...]):
+    """Vista inmutable que también conserva la interfaz ``entries()`` remota."""
+
+    def __call__(self) -> list[tuple[TokenType, str]]:
+        return [(entry.token_type, entry.original_lexeme) for entry in self]
+
+
 class SymbolTable:
     """Deduplica lexemas por categoría y texto exacto.
 
@@ -43,10 +50,10 @@ class SymbolTable:
         self._indices: dict[tuple[TokenType, str], int] = {}
 
     @property
-    def entries(self) -> tuple[LexemeEntry, ...]:
+    def entries(self) -> LexemeEntries:
         """Vista inmutable de las entradas en orden de inserción."""
 
-        return tuple(self._entries)
+        return LexemeEntries(self._entries)
 
     def register(self, token_type: TokenType, lexeme: str) -> int:
         """Registra un lexema y devuelve su índice estable, desde cero."""
@@ -73,11 +80,29 @@ class SymbolTable:
 
         return self._entries[index]
 
+    def intern(self, token_type: TokenType, lexeme: str) -> int:
+        """Alias de ``register`` usado por la interfaz funcional."""
+
+        return self.register(token_type, lexeme)
+
+    def get_index(self, token_type: TokenType, lexeme: str) -> int | None:
+        """Devuelve el índice existente sin crear una entrada."""
+
+        return self._indices.get((token_type, self._normalize(lexeme)))
+
+    def sorted_entries(self) -> list[tuple[TokenType, str]]:
+        """Devuelve pares ordenados para comparaciones reproducibles."""
+
+        return sorted(self.entries(), key=lambda entry: (entry[0].value, entry[1]))
+
     def __len__(self) -> int:
         return len(self._entries)
 
     def __iter__(self) -> Iterator[LexemeEntry]:
         return iter(self._entries)
+
+    def __contains__(self, key: object) -> bool:
+        return key in self._indices
 
     @staticmethod
     def _normalize(lexeme: str) -> str:

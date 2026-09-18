@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import re
+from dataclasses import dataclass
+from os import PathLike
 
 from .errors import LexicalError, LexicalErrorKind
 from .symbol_table import STORED_TOKEN_TYPES, SymbolTable
@@ -62,6 +64,15 @@ DELIMITERS: dict[str, TokenType] = {
     ",": TokenType.COMMA,
     ".": TokenType.DOT,
 }
+
+
+@dataclass(slots=True)
+class LexResult:
+    """Resultado funcional: tokens, errores y tabla de lexemas."""
+
+    tokens: list[Token]
+    errors: list[LexicalError]
+    symbol_table: SymbolTable
 
 
 class Lexer:
@@ -364,3 +375,20 @@ class Lexer:
                 kind=kind,
             )
         )
+
+
+def tokenize(source: str) -> LexResult:
+    """Adaptador funcional sobre la API pública ``Lexer``."""
+
+    lexer = Lexer(source)
+    tokens = lexer.tokenize()
+    return LexResult(tokens, lexer.errors, lexer.symbol_table)
+
+
+def tokenize_file(
+    path: str | PathLike[str], encoding: str = "utf-8"
+) -> LexResult:
+    """Lee un archivo y delega su texto al lexer."""
+
+    with open(path, encoding=encoding) as source_file:
+        return tokenize(source_file.read())

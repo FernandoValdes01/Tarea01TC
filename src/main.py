@@ -20,6 +20,11 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="muestra familia de operador o índice de tabla junto al token",
     )
+    parser.add_argument(
+        "--tabla",
+        action="store_true",
+        help="muestra la tabla de lexemas al final",
+    )
     return parser
 
 
@@ -36,6 +41,14 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     for token in tokens:
         print(token.format(include_attribute=args.show_attributes))
+
+    if args.tabla:
+        print("--- tabla de lexemas ---")
+        for entry in lexer.symbol_table:
+            print(
+                f"{entry.index}: "
+                f"<{entry.token_type.value}, {entry.original_lexeme!r}>"
+            )
 
     if lexer.errors:
         print("Errores léxicos:", file=sys.stderr)

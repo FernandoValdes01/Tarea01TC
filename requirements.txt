@@ -1,1 +1,3 @@
-# El analizador usa solamente la biblioteca estándar de Python.
+# Dependencias de ejecución: solo biblioteca estándar.
+# Dependencia de desarrollo para la suite: pytest.
+pytest>=8

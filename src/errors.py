@@ -32,3 +32,9 @@ class LexicalError:
             f"[{self.kind.value}] línea {self.line}, columna {self.column}: "
             f"{self.message}; fragmento {self.fragment!r}"
         )
+
+
+# Nombres usados por el corpus incorporado desde la rama remota. Son alias,
+# no modelos de error distintos.
+ErrorKind = LexicalErrorKind
+LexError = LexicalError
