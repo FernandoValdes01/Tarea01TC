@@ -32,7 +32,7 @@ Figura 9 (AFD mínimo etiquetado): siete estados; las salidas de token distintas
 
 Las versiones gráficas de estas figuras están incorporadas al PDF entregable
 en las páginas del `Anexo A. Diagramas de autómatas`. Se generan desde las
-fuentes Mermaid versionadas con `python tools/build_report_diagrams.py`, evitando
+fuentes de estados y transiciones versionadas con `python tools/build_report_diagrams.py`, evitando
 que el informe dependa de una captura manual o de una imagen no reproducible.
 
 ## Anexo C. Evidencia de comandos y salidas

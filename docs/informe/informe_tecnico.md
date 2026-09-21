@@ -210,4 +210,4 @@ La trazabilidad interna se completa con `docs/informe/01_especificacion_lexica.m
 
 Repositorio Git: https://github.com/FernandoValdes01/Tarea01TC
 
-Los anexos documentales viven en `docs/informe/anexos.md`. El presente PDF incorpora además las nueve figuras gráficas generadas desde las fuentes Mermaid de `docs/automatas/diagramas/`, incluida la secuencia coherente AFN → AFD por subconjuntos → AFD mínimo etiquetado.
+Los anexos documentales viven en `docs/informe/anexos.md`. El presente PDF incorpora nueve figuras vectoriales compuestas a partir de la especificación de estados y transiciones conservada en `docs/automatas/diagramas/`, incluida la secuencia coherente AFN → AFD por subconjuntos → AFD mínimo etiquetado.

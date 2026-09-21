@@ -60,7 +60,10 @@ npx --yes puppeteer browsers install chrome-headless-shell
 
 ## Inclusión en el informe PDF
 
-Los diagramas editables Mermaid se renderizan y componen en páginas A4 mediante:
+El informe usa una composición vectorial propia, con posiciones, rutas y
+tipografía controladas para impresión. Los `.mmd` documentan la estructura y
+los `.svg` permiten una consulta rápida, pero el anexo no depende del diseño
+automático de Mermaid. Se genera mediante:
 
 ```bash
 python tools/build_report_diagrams.py

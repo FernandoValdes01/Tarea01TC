@@ -29,7 +29,7 @@ python tools/build_final_report.py
 
 La salida normal lista un token por línea como `<TIPO, 'lexema', línea, columna>`. `--show-attributes` agrega la familia o el índice léxico y `--tabla` vuelca la tabla de lexemas. Los errores se imprimen en `stderr`; el código de salida es 1 si hubo errores y 0 si no.
 
-`build_report_diagrams.py` genera `docs/informe/automatas_appendix.pdf` a partir de los Mermaid editables (`.mmd`). `build_final_report.py` reutiliza ese generador, compone el contenido canónico de `docs/informe/informe_tecnico.md` y produce el entregable `docs/informe/Tarea_Fernando_Valdes.pdf`. Requiere `reportlab`, `pdfunite` y `mmdc` (o `npx`, que usa `@mermaid-js/mermaid-cli`); si Puppeteer solicita el navegador, instálelo con `npx --yes puppeteer browsers install chrome-headless-shell`.
+`build_report_diagrams.py` genera `docs/informe/automatas_appendix.pdf` como gráficos vectoriales con composición académica controlada. Las fuentes Mermaid (`.mmd`) conservan la especificación editable de estados y transiciones. `build_final_report.py` reutiliza el generador, compone el contenido canónico de `docs/informe/informe_tecnico.md` y produce `docs/informe/Tarea_Fernando_Valdes.pdf`. Requiere `reportlab` y `pdfunite`.
 
 ## Ejecución de pruebas
 

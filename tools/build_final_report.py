@@ -11,7 +11,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from reportlab.lib import colors
-from reportlab.lib.enums import TA_CENTER
+from reportlab.lib.enums import TA_CENTER, TA_LEFT
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import cm
@@ -19,6 +19,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
     KeepTogether,
+    Image,
     PageBreak,
     Paragraph,
     Preformatted,
@@ -35,10 +36,15 @@ from build_report_diagrams import build as build_diagrams
 ROOT = Path(__file__).resolve().parents[1]
 REPORT_SOURCE = ROOT / "docs" / "informe" / "informe_tecnico.md"
 DEFAULT_OUTPUT = ROOT / "docs" / "informe" / "Tarea_Fernando_Valdes.pdf"
+LOGO = ROOT / "docs" / "ing_civil-informatica_gris.png"
 
-BLUE = colors.HexColor("#1F4E78")
-LIGHT_BLUE = colors.HexColor("#DCE6F1")
-LIGHT_GREY = colors.HexColor("#F4F6F7")
+BLUE = colors.HexColor("#007DB3")
+DARK_BLUE = colors.HexColor("#183B56")
+YELLOW = colors.HexColor("#FDC400")
+GREY = colors.HexColor("#858789")
+LIGHT_BLUE = colors.HexColor("#E8F3F8")
+LIGHT_GREY = colors.HexColor("#F4F5F5")
+INK = colors.HexColor("#263238")
 
 
 def register_fonts() -> tuple[str, str, str]:
@@ -84,7 +90,7 @@ def make_styles(regular: str, bold: str, mono: str) -> dict[str, ParagraphStyle]
             fontSize=9.4,
             leading=13.2,
             spaceAfter=6,
-            textColor=colors.HexColor("#222222"),
+            textColor=INK,
         ),
         "h1": ParagraphStyle(
             "H1",
@@ -92,7 +98,7 @@ def make_styles(regular: str, bold: str, mono: str) -> dict[str, ParagraphStyle]
             fontName=bold,
             fontSize=17,
             leading=21,
-            textColor=BLUE,
+            textColor=DARK_BLUE,
             spaceBefore=12,
             spaceAfter=8,
         ),
@@ -102,7 +108,7 @@ def make_styles(regular: str, bold: str, mono: str) -> dict[str, ParagraphStyle]
             fontName=bold,
             fontSize=13,
             leading=16,
-            textColor=BLUE,
+            textColor=DARK_BLUE,
             spaceBefore=10,
             spaceAfter=6,
         ),
@@ -112,7 +118,7 @@ def make_styles(regular: str, bold: str, mono: str) -> dict[str, ParagraphStyle]
             fontName=bold,
             fontSize=11,
             leading=14,
-            textColor=colors.HexColor("#2E75B6"),
+            textColor=BLUE,
             spaceBefore=8,
             spaceAfter=5,
         ),
@@ -178,7 +184,8 @@ def markdown_table(
                 ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
                 ("BACKGROUND", (0, 1), (-1, -1), colors.white),
                 ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, LIGHT_GREY]),
-                ("GRID", (0, 0), (-1, -1), 0.35, colors.HexColor("#7F8C8D")),
+                ("LINEBELOW", (0, 0), (-1, 0), 1.1, YELLOW),
+                ("LINEBELOW", (0, 1), (-1, -2), 0.25, colors.HexColor("#D4D9DC")),
                 ("VALIGN", (0, 0), (-1, -1), "TOP"),
                 ("LEFTPADDING", (0, 0), (-1, -1), 4),
                 ("RIGHTPADDING", (0, 0), (-1, -1), 4),
@@ -314,12 +321,17 @@ def page_decorations(canvas, document) -> None:
     if page == 1:
         return
     canvas.saveState()
-    canvas.setStrokeColor(colors.HexColor("#B4C6D7"))
+    canvas.setFillColor(BLUE)
+    canvas.rect(0, A4[1] - 0.22 * cm, A4[0], 0.22 * cm, stroke=0, fill=1)
+    canvas.setStrokeColor(colors.HexColor("#C9D7DE"))
     canvas.line(2 * cm, A4[1] - 1.4 * cm, A4[0] - 2 * cm, A4[1] - 1.4 * cm)
     canvas.setFont(document.regular_font, 7.5)
-    canvas.setFillColor(colors.HexColor("#566573"))
-    canvas.drawString(2 * cm, A4[1] - 1.15 * cm, "INFO1148 | Análisis léxico de Prolog")
-    canvas.drawRightString(A4[0] - 2 * cm, 1.15 * cm, f"Página {page}")
+    canvas.setFillColor(GREY)
+    canvas.drawString(2 * cm, A4[1] - 1.15 * cm, "UNIVERSIDAD CATÓLICA DE TEMUCO  ·  INFO1148")
+    canvas.setFillColor(YELLOW)
+    canvas.circle(A4[0] - 2 * cm - 20, 1.13 * cm, 2.2, stroke=0, fill=1)
+    canvas.setFillColor(GREY)
+    canvas.drawRightString(A4[0] - 2 * cm, 1.05 * cm, f"{page:02d}")
     canvas.restoreState()
 
 
@@ -338,94 +350,93 @@ def build_base_pdf(output: Path) -> None:
     )
     document.regular_font = regular
     width = A4[0] - 4 * cm
-    story: list = [Spacer(1, 1.2 * cm)]
+    if not LOGO.is_file():
+        raise FileNotFoundError(LOGO)
+    story: list = [Spacer(1, 0.5 * cm)]
+    logo = Image(str(LOGO), width=16.4 * cm, height=3.28 * cm)
+    logo.hAlign = "LEFT"
+    story.extend([logo, Spacer(1, 1.8 * cm)])
     story.append(
         Paragraph(
-            "UNIVERSIDAD CATÓLICA DE TEMUCO",
-            ParagraphStyle(
-                "Institution",
-                fontName=bold,
-                fontSize=13,
-                leading=16,
-                alignment=TA_CENTER,
-                textColor=colors.HexColor("#566573"),
-            ),
-        )
-    )
-    story.extend([Spacer(1, 2.2 * cm)])
-    story.append(
-        Paragraph(
-            "INFORME DE TAREA",
+            "INFORME ACADÉMICO",
             ParagraphStyle(
                 "CoverTitle",
                 fontName=bold,
-                fontSize=25,
-                leading=30,
-                alignment=TA_CENTER,
-                textColor=BLUE,
+                fontSize=11,
+                leading=14,
+                alignment=TA_LEFT,
+                textColor=GREY,
+                spaceAfter=7,
             ),
         )
     )
-    story.append(Spacer(1, 0.7 * cm))
+    story.append(Table([["", ""]], colWidths=[1.5 * cm, width - 1.5 * cm], rowHeights=[0.11 * cm], style=TableStyle([("BACKGROUND",(0,0),(0,0),YELLOW),("BACKGROUND",(1,0),(1,0),BLUE)])))
+    story.append(Spacer(1, 0.55 * cm))
     story.append(
         Paragraph(
             "Análisis léxico del lenguaje Prolog",
             ParagraphStyle(
                 "CoverSubtitle",
                 fontName=bold,
-                fontSize=19,
-                leading=23,
-                alignment=TA_CENTER,
-                textColor=colors.HexColor("#2E75B6"),
+                fontSize=27,
+                leading=32,
+                alignment=TA_LEFT,
+                textColor=DARK_BLUE,
             ),
         )
     )
-    story.append(Spacer(1, 0.4 * cm))
+    story.append(Spacer(1, 0.28 * cm))
     story.append(
         Paragraph(
-            "Teoría de la Computación — INFO1148",
+            "Diseño, implementación y validación de un analizador léxico para un subconjunto de Prolog",
             ParagraphStyle(
                 "Course",
                 fontName=regular,
-                fontSize=12,
-                leading=16,
-                alignment=TA_CENTER,
+                fontSize=11.5,
+                leading=16.5,
+                alignment=TA_LEFT,
+                textColor=GREY,
             ),
         )
     )
-    story.append(Spacer(1, 2.1 * cm))
+    story.append(Spacer(1, 1.35 * cm))
     cover_data = [
-        ["Integrantes", "Fernando Valdes\nJuan Muñoz Veloso\nVicente Rivera"],
-        ["Profesor", "Prof. M. Lévano"],
-        ["Fecha de entrega", "17 de septiembre de 2026"],
-        ["Repositorio", "https://github.com/FernandoValdes01/Tarea01TC"],
+        ["ASIGNATURA", "Teoría de la Computación · INFO1148"],
+        ["ESTUDIANTES", "Fernando Valdes · Juan Muñoz Veloso · Vicente Rivera"],
+        ["PROFESOR", "Prof. M. Lévano"],
+        ["ENTREGA", "17 de septiembre de 2026"],
+        ["REPOSITORIO", "github.com/FernandoValdes01/Tarea01TC"],
     ]
+    cover_label = ParagraphStyle("CoverLabel",fontName=bold,fontSize=7.2,leading=10,textColor=BLUE)
+    cover_value = ParagraphStyle("CoverValue",fontName=regular,fontSize=9.2,leading=12.5,textColor=INK)
     cover_table = Table(
-        [[Paragraph(f"<b>{html.escape(a)}</b>", styles["body"]), Paragraph(inline_markup(b, regular, mono).replace("\n", "<br/>"), styles["body"])] for a, b in cover_data],
-        colWidths=[4 * cm, width - 4 * cm],
+        [[Paragraph(html.escape(a), cover_label), Paragraph(inline_markup(b, regular, mono), cover_value)] for a, b in cover_data],
+        colWidths=[3.1 * cm, width - 3.1 * cm],
     )
     cover_table.setStyle(
         TableStyle(
             [
-                ("BACKGROUND", (0, 0), (0, -1), LIGHT_BLUE),
-                ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#7F8C8D")),
+                ("BACKGROUND", (0, 0), (-1, -1), LIGHT_GREY),
+                ("LINEBELOW", (0, 0), (-1, -2), 0.35, colors.HexColor("#D4D9DC")),
+                ("LINEBEFORE", (0, 0), (0, -1), 3, BLUE),
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                ("LEFTPADDING", (0, 0), (-1, -1), 8),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 8),
-                ("TOPPADDING", (0, 0), (-1, -1), 7),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
+                ("LEFTPADDING", (0, 0), (-1, -1), 10),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+                ("TOPPADDING", (0, 0), (-1, -1), 8),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
             ]
         )
     )
-    story.extend([cover_table, Spacer(1, 1.2 * cm)])
+    story.extend([cover_table, Spacer(1, 1.0 * cm)])
     story.append(
         Paragraph(
-            "Temuco, 2026",
+            "TEMUCO · CHILE · 2026",
             ParagraphStyle(
                 "Place",
                 fontName=regular,
-                fontSize=10,
-                alignment=TA_CENTER,
+                fontSize=7.5,
+                textColor=GREY,
+                alignment=TA_LEFT,
             ),
         )
     )
