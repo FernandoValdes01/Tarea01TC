@@ -35,7 +35,6 @@ from build_report_diagrams import build as build_diagrams
 ROOT = Path(__file__).resolve().parents[1]
 REPORT_SOURCE = ROOT / "docs" / "informe" / "informe_tecnico.md"
 DEFAULT_OUTPUT = ROOT / "docs" / "informe" / "Tarea_Fernando_Valdes.pdf"
-LEGACY_OUTPUT = ROOT / "docs" / "informe" / "Tarea_FernandoValdes.pdf"
 
 BLUE = colors.HexColor("#1F4E78")
 LIGHT_BLUE = colors.HexColor("#DCE6F1")
@@ -198,25 +197,25 @@ def split_markdown_row(line: str) -> list[str]:
     cells: list[str] = []
     current: list[str] = []
     in_code = False
-    escaped = False
-    for char in content:
-        if escaped:
-            current.append(char)
-            escaped = False
-            continue
-        if char == "\\":
-            current.append(char)
-            escaped = True
+    index = 0
+    while index < len(content):
+        char = content[index]
+        if char == "\\" and index + 1 < len(content) and content[index + 1] == "|":
+            current.extend((char, "|"))
+            index += 2
             continue
         if char == "`":
             in_code = not in_code
             current.append(char)
+            index += 1
             continue
         if char == "|" and not in_code:
             cells.append("".join(current).strip())
             current = []
+            index += 1
             continue
         current.append(char)
+        index += 1
     cells.append("".join(current).strip())
     return cells
 
@@ -453,8 +452,6 @@ def build_final(output: Path, appendix: Path = DEFAULT_APPENDIX) -> None:
         base = Path(temporary_directory) / "informe_base.pdf"
         build_base_pdf(base)
         subprocess.run([pdfunite, str(base), str(appendix), str(output)], check=True)
-    if output == DEFAULT_OUTPUT:
-        shutil.copyfile(output, LEGACY_OUTPUT)
 
 
 def main() -> int:

@@ -408,7 +408,7 @@ Se revisaron antes de redactar esta especificación:
 Las rutas siguientes están escritas relativas a la raíz del repositorio (`Tarea01TC`):
 
 1. `Tarea INFO1148 sem2_2026.pdf`, enunciado de la tarea de análisis léxico.
-2. `agents.md`, instrucciones y alcance inicial del repositorio.
+2. Instrucciones de trabajo proporcionadas externamente durante la preparación del repositorio.
 3. `../teoria-computacion/clases/semana2/sesion1_TC.pdf`, contenidos sobre compiladores,
    análisis léxico, tabla de símbolos, manejo de errores, alfabetos y palabras.
 4. `../teoria-computacion/clases/semana3/sesion4_Lenguajes_Regulares.html`, contenidos
@@ -417,4 +417,5 @@ Las rutas siguientes están escritas relativas a la raíz del repositorio (`Tare
    informe, especificación léxica, prioridades, tabla de lexemas, errores y pruebas.
 
 Las tres fuentes de `teoria-computacion` se encuentran como directorio hermano del
-repositorio, tal como confirma `agents.md`; no se copiaron ni modificaron.
+repositorio; las instrucciones de trabajo fueron proporcionadas externamente. No se
+copiaron ni modificaron esas fuentes.

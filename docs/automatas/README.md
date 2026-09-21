@@ -73,5 +73,4 @@ genera desde el Markdown canónico y agrega automáticamente este anexo con:
 python tools/build_final_report.py
 ```
 
-El entregable resultante es `docs/informe/Tarea_Fernando_Valdes.pdf`; también se
-actualiza el nombre histórico sin guion para no romper enlaces previos.
+El entregable resultante es `docs/informe/Tarea_Fernando_Valdes.pdf`.

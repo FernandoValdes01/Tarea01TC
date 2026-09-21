@@ -42,13 +42,13 @@ El contrato completo vive en `docs/informe/01_especificacion_lexica.md` y este c
 | Token | Descripción | Patrón Python (`re`) | Ejemplos válidos | Exclusiones | Atributo |
 | ----- | ----------- | --------------------- | ---------------- | ----------- | -------- |
 | `ATOM` | Átomo simple iniciado por minúscula ASCII. | `[a-z][a-z0-9_]*` | `padre`, `persona_1`, `isla` | `Padre`, `á` | ninguno |
-| `QUOTED_ATOM` | Átomo delimitado por comillas simples. | `'(?:[^\\'\r\n]\|\\[\\'nrt])*'` | `'Juan Pérez'`, `':-'`, `'it\'s'` | `'sin cierre`, `'a\q'`, `\"` interno | ninguno |
-| `VARIABLE` | Identificador iniciado por mayúscula o `_` con continuación. | `(?:[A-Z][A-Za-z0-9_]*\|_[A-Za-z0-9_]+)` | `X`, `Persona`, `_Temporal`, `_1` | `_` solo, `9X` | ninguno |
+| `QUOTED_ATOM` | Átomo delimitado por comillas simples. | `'(?:[^\\'\r\n]|\\[\\'nrt])*'` | `'Juan Pérez'`, `':-'`, `'it\'s'` | `'sin cierre`, `'a\q'`, `\"` interno | ninguno |
+| `VARIABLE` | Identificador iniciado por mayúscula o `_` con continuación. | `(?:[A-Z][A-Za-z0-9_]*|_[A-Za-z0-9_]+)` | `X`, `Persona`, `_Temporal`, `_1` | `_` solo, `9X` | ninguno |
 | `ANONYMOUS_VARIABLE` | Guion bajo aislado. | `_` | `_` | `_X`, `__` (son `VARIABLE`) | ninguno |
 | `INTEGER` | Secuencia de dígitos ASCII sin signo. | `[0-9]+` | `0`, `25`, `0007` | `-25`, `5.`, `.5` | ninguno |
 | `REAL` | Dígitos, punto y dígitos, sin signo. | `[0-9]+\.[0-9]+` | `3.14`, `0.5`, `10.00` | `5.`, `.5`, `1.2.3`, exponentes | ninguno |
-| `STRING` | Literal delimitado por comillas dobles. | `"(?:[^\\"\r\n]\|\\[\\"nrt])*"` | `"hola"`, `"dice \"sí\""`, `"línea\n"` | `"sin cierre`, `"a\q"`, `\'` interno | ninguno |
-| `OPERATOR` | Operador exacto de una de seis familias. | unión normativa de la sección 6 | `:-`, `?-`, `-->`, `\==`, `=..`, `//`, `**`, `is`, `mod`, `\+`, `!`, `;` | `:`, `?` y `\` aisladas | `family` |
+| `STRING` | Literal delimitado por comillas dobles. | `"(?:[^\\"\r\n]|\\[\\"nrt])*"` | `"hola"`, `"dice \"sí\""`, `"línea\n"` | `"sin cierre`, `"a\q"`, `\'` interno | ninguno |
+| `OPERATOR` | Operador exacto de una de seis familias. | unión normativa de la sección 6 | `:-`, `?-`, `-->`, `\==`, `=..`, `//`, `**`, `is`, `mod`, `\+`, `!`, `;` | `:`, `?` y una barra inversa aislada | `family` |
 | `LPAREN` … `DOT` | Delimitadores de un carácter. | una alternativa por símbolo | `(`, `)`, `[`, `]`, `{`, `}`, `\|`, `,`, `.` | sin validación de balance | ninguno |
 
 Las familias de `OPERATOR` son `CLAUSE` (`:-`), `QUERY` (`?-`), `DCG` (`-->`), `UNIFICATION_COMPARISON` (`=`, `\=`, `==`, `\==`, `=..`, `<`, `=<`, `>`, `>=`), `ARITHMETIC` (`+`, `-`, `*`, `/`, `//`, `**`, `is`, `mod`) y `CONTROL` (`\+`, `!`, `;`). La unión normativa se implementa como un mapa de operadores recorrido por longitud descendente. Las palabras `is` y `mod` se reconocen solo cuando el lexema completo no tiene continuación de identificador.

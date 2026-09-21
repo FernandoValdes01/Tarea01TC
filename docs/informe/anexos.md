@@ -55,7 +55,7 @@ El programa válido produce 207 tokens, 0 errores y 48 entradas de tabla, con di
 
 El programa con errores produce 69 tokens, 12 errores y 28 entradas, con diagnósticos `UNTERMINATED_QUOTED_ATOM` en 3:6, `UNTERMINATED_STRING` en 5:6, `INVALID_CHARACTER('@')` en 7:6, `MALFORMED_NUMBER('5.')` en 8:6, `MALFORMED_NUMBER('.5')` en 9:6, `MALFORMED_NUMBER('1..2')` en 10:6, `INVALID_CHARACTER(':')` en 11:5, `INVALID_CHARACTER('?')` en 12:5, `INVALID_CHARACTER('\')` en 13:5, `INVALID_ESCAPE('\q')` en 14:8, `INVALID_ESCAPE('\q')` en 15:8 y `UNTERMINATED_BLOCK_COMMENT` en 17:1 hasta EOF.
 
-El PDF final se generó con `python tools/build_final_report.py`, que reutiliza `build_report_diagrams.py`, compone el informe desde Markdown y une el anexo mediante `pdfunite`. El entregable principal es `docs/informe/Tarea_Fernando_Valdes.pdf`; se mantiene una copia con el nombre histórico para compatibilidad. Se verificó con extracción de texto y conteo de páginas que los operadores `\==`, `=..`, `:-` y `?-` se ven correctamente y que las figuras son legibles.
+El PDF final se generó con `python tools/build_final_report.py`, que reutiliza `build_report_diagrams.py`, compone el informe desde Markdown y une el anexo mediante `pdfunite`. El entregable es `docs/informe/Tarea_Fernando_Valdes.pdf`. Se verificó con extracción de texto y conteo de páginas que los operadores `\==`, `=..`, `:-` y `?-` se ven correctamente y que las figuras son legibles.
 
 ## Anexo D. Lista de comprobación contra la rúbrica
 
@@ -66,7 +66,7 @@ El PDF final se generó con `python tools/build_final_report.py`, que reutiliza 
 | Implementación del lexer (25)               | `src/` completo con posiciones 1-based, máxima coincidencia y prioridades; salidas reales de ambos programas; comandos de ejecución en el capítulo 9 y el Anexo C                                                    | Demostrado                     |
 | Pruebas y errores léxicos (15)              | `tests/test_lexer.py` con 85 pruebas (26 válidas, 22 de prioridad, 16 inválidas, 12 transversales, 6 de archivos), dos archivos completos y `docs/informe/04_matriz_de_pruebas.md` con resultado real                | Demostrado                     |
 | Informe, repositorio y presentación (15)    | `docs/informe/informe_tecnico.md`, `referencias.md`, `anexos.md` y PDF final con diagramas; README actualizado; `git remote` real en el Anexo A | Demostrado |
-| Pauta y fuentes de verdad                   | `agents.md`, el enunciado y `../teoria-computacion/tareas/Formato Informe Tarea.pdf` fueron localizados y revisados; el PDF final incorpora la estructura, tablas y anexos solicitados | Demostrado |
+| Pauta y fuentes de verdad                   | Las instrucciones de trabajo fueron proporcionadas externamente; el enunciado y `../teoria-computacion/tareas/Formato Informe Tarea.pdf` fueron localizados y revisados; el PDF final incorpora la estructura, tablas y anexos solicitados | Demostrado |
 
 ## Anexo E. Estado final
 
