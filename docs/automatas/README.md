@@ -51,4 +51,29 @@ mmdc -i docs/automatas/diagramas/atomos.mmd \
 ```
 
 Mermaid CLI se usa como herramienta externa. El repositorio no la incorpora
-como dependencia.
+como dependencia. Si se ejecuta mediante `npx` y Puppeteer solicita el
+navegador, instálelo una vez con:
+
+```bash
+npx --yes puppeteer browsers install chrome-headless-shell
+```
+
+## Inclusión en el informe PDF
+
+Los diagramas editables Mermaid se renderizan y componen en páginas A4 mediante:
+
+```bash
+python tools/build_report_diagrams.py
+```
+
+El resultado es `docs/informe/automatas_appendix.pdf`. La fuente LaTeX incluye
+ese anexo cuando el archivo está presente y el PDF entregable se actualiza con:
+
+```bash
+pdfunite /tmp/Tarea_FernandoValdes_base.pdf \
+  docs/informe/automatas_appendix.pdf docs/informe/Tarea_FernandoValdes.pdf
+```
+
+Con LaTeX instalado, la alternativa preferida es ejecutar dos pasadas de
+`pdflatex` sobre `docs/informe/informe_tecnico.tex`: la fuente ya incluye el
+anexo mediante `pdfpages`.

@@ -22,8 +22,13 @@ Figura 4 (operadores): s0 con ramas \ -> {\=, \==, \+}, = -> {=, ==, =.., =<},
 Figura 5 (ignorables): [ \t] en ciclo de una columna; \n, \r, \r\n un salto;
   % hasta antes del salto; /* ... */ hasta el primer */ o UNTERMINATED_BLOCK_COMMENT.
 Figura 6 (integrado): despachador por primera clase + máxima coincidencia +
-  prioridades de la sección 8; equivalente a la unión de las Figuras 1-5.
+prioridades de la sección 8; equivalente a la unión de las Figuras 1-5.
 ```
+
+Las versiones gráficas de estas figuras están incorporadas al PDF entregable
+en las páginas del `Anexo A. Diagramas de autómatas`. Se generan desde los SVG
+versionados con `python tools/build_report_diagrams.py`, evitando que el informe
+dependa de una captura manual o de una imagen no reproducible.
 
 ## Anexo C. Evidencia de comandos y salidas
 
@@ -34,6 +39,11 @@ python -m compileall src tests
 python -m pytest -q
 python -m src.main tests/corpus/entradas/programa_valido.pl
 python -m src.main tests/corpus/entradas/programa_con_errores.pl
+python tools/build_report_diagrams.py
+# Con LaTeX instalado, compilar informe_tecnico.tex en dos pasadas.
+# En un entorno sin LaTeX, usar un PDF base previamente generado:
+pdfunite /tmp/Tarea_FernandoValdes_base.pdf \
+  docs/informe/automatas_appendix.pdf docs/informe/Tarea_FernandoValdes.pdf
 git diff --check
 git status --short
 ```
@@ -44,17 +54,17 @@ El programa válido produce 207 tokens, 0 errores y 48 entradas de tabla, con di
 
 El programa con errores produce 69 tokens, 12 errores y 28 entradas, con diagnósticos `UNTERMINATED_QUOTED_ATOM` en 3:6, `UNTERMINATED_STRING` en 5:6, `INVALID_CHARACTER('@')` en 7:6, `MALFORMED_NUMBER('5.')` en 8:6, `MALFORMED_NUMBER('.5')` en 9:6, `MALFORMED_NUMBER('1..2')` en 10:6, `INVALID_CHARACTER(':')` en 11:5, `INVALID_CHARACTER('?')` en 12:5, `INVALID_CHARACTER('\')` en 13:5, `INVALID_ESCAPE('\q')` en 14:8, `INVALID_ESCAPE('\q')` en 15:8 y `UNTERMINATED_BLOCK_COMMENT` en 17:1 hasta EOF.
 
-El PDF se generó con `pdflatex -interaction=nonstopmode informe_tecnico.tex` (dos pasadas) en `docs/informe/` y se guardó como `docs/informe/Tarea_FernandoValdes.pdf`. Se verificó con extracción de texto que los operadores `\==`, `=..`, `:-` y `?-` se ven correctamente y que las tablas son legibles.
+El anexo gráfico se generó con `python tools/build_report_diagrams.py` y se unió al informe con `pdfunite`, guardándose en el PDF entregable `docs/informe/Tarea_FernandoValdes.pdf`. La fuente LaTeX también incluye el anexo mediante `pdfpages` cuando se compila en un entorno con LaTeX instalado. Se verificó con extracción de texto y conteo de páginas que los operadores `\==`, `=..`, `:-` y `?-` se ven correctamente y que las figuras son legibles.
 
 ## Anexo D. Lista de comprobación contra la rúbrica
 
 | Dimensión y puntos                          | Evidencia                                                                                                                                                                                                            | Estado                         |
 | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
 | Especificación y expresiones regulares (20) | `docs/informe/01_especificacion_lexica.md` con catálogo, regex y convenciones; informe capítulos 5–6; `INTEGER_RE`, `REAL_RE`, clases ASCII y tabla de operadores coherentes en `src/lexer.py` | Demostrado                     |
-| Modelado con autómatas (25)                 | Informe capítulos 6–7 con Figuras 1–6, tabla de subconjuntos `/`, `//`, `/*` con ε-cerradura declarada y particiones de minimización del AFD numérico con equivalencias justificadas                                 | Demostrado                     |
+| Modelado con autómatas (25)                 | Informe capítulos 6–7 con Figuras 1–9, anexo gráfico en el PDF, tabla de subconjuntos `/`, `//`, `/*` con ε-cerradura declarada y particiones de minimización del AFD numérico con equivalencias justificadas | Demostrado                     |
 | Implementación del lexer (25)               | `src/` completo con posiciones 1-based, máxima coincidencia y prioridades; salidas reales de ambos programas; comandos de ejecución en el capítulo 9 y el Anexo C                                                    | Demostrado                     |
 | Pruebas y errores léxicos (15)              | `tests/test_lexer.py` con 85 pruebas (26 válidas, 22 de prioridad, 16 inválidas, 12 transversales, 6 de archivos), dos archivos completos y `docs/informe/04_matriz_de_pruebas.md` con resultado real                | Demostrado                     |
-| Informe, repositorio y presentación (15)    | `docs/informe/informe_tecnico.md`, `referencias.md`, `anexos.md` y PDF final; README actualizado; `git remote` real en el Anexo A                                      | Demostrado |
+| Informe, repositorio y presentación (15)    | `docs/informe/informe_tecnico.md`, `referencias.md`, `anexos.md` y PDF final con diagramas; README actualizado; `git remote` real en el Anexo A | Demostrado |
 | Requisito no demostrable                    | `agents.md` y `Formato Informe Tarea.pdf` no existen en las rutas indicadas; se declaran como pendientes y no se inventa su contenido                                                                                | Señalado                       |
 
 ## Anexo E. Pendientes reales

@@ -6,6 +6,7 @@
 \usepackage{geometry}
 \geometry{margin=2.5cm}
 \usepackage{hyperref}
+\usepackage{pdfpages}
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{verbatim}
@@ -406,4 +407,17 @@ enlace real al repositorio, los listados de autómatas completos, las
 salidas extensas de ambos programas, la evidencia de los comandos de
 verificación y la lista de comprobación contra la rúbrica con el
 archivo o prueba que respalda cada dimensión.
+
+\clearpage
+\section*{Anexo A. Diagramas de autómatas}
+Las fuentes editables de las figuras están en
+\verb|docs/automatas/diagramas|. El anexo PDF se genera con
+\verb|tools/build_report_diagrams.py| para conservar diagramas legibles y
+coherentes con el modelado formal del informe.
+\IfFileExists{automatas_appendix.pdf}{
+  \includepdf[pages=-,pagecommand={}]{automatas_appendix.pdf}
+}{
+  \textbf{Nota de compilación:} genere primero
+  \verb|automatas_appendix.pdf| con el script de documentación.
+}
 \end{document}

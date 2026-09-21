@@ -23,9 +23,12 @@ python -m src.main tests/corpus/entradas/programa_valido.pl
 python -m src.main tests/corpus/entradas/programa_con_errores.pl
 python -m src.main archivo.pl --tabla
 python -m src.main archivo.pl --show-attributes
+python tools/build_report_diagrams.py
 ```
 
 La salida normal lista un token por línea como `<TIPO, 'lexema', línea, columna>`. `--show-attributes` agrega la familia o el índice léxico y `--tabla` vuelca la tabla de lexemas. Los errores se imprimen en `stderr`; el código de salida es 1 si hubo errores y 0 si no.
+
+El script de documentación genera `docs/informe/automatas_appendix.pdf` a partir de los Mermaid editables (`.mmd`) y los renderiza con Mermaid CLI. Requiere `reportlab` y `mmdc` (o `npx`, que usa `@mermaid-js/mermaid-cli`); si Puppeteer solicita el navegador, instálelo con `npx --yes puppeteer browsers install chrome-headless-shell`. El PDF final se puede actualizar uniendo ese anexo al informe con `pdfunite`.
 
 ## Ejecución de pruebas
 
@@ -42,6 +45,7 @@ Resultado real de la integración: 85 pruebas aprobadas y cero fallos.
 - `src/`: código del analizador léxico (`tokens.py`, `errors.py`, `symbol_table.py`, `lexer.py`, `main.py`).
 - `tests/`: pruebas (`test_lexer.py`) y corpus (`corpus/validos/`, `corpus/invalidos/`, `corpus/entradas/` con `programa_valido.pl` y `programa_con_errores.pl`).
 - `docs/`: informe, autómatas y referencias (`docs/informe/01_especificacion_lexica.md`, `docs/informe/04_matriz_de_pruebas.md`, `docs/informe/informe_tecnico.md`, `docs/informe/referencias.md`, `docs/informe/anexos.md`, PDF final y fuente LaTeX).
+- `tools/build_report_diagrams.py`: genera el anexo PDF con los diagramas de autómatas.
 
 ## Formato de salida
 

@@ -163,4 +163,4 @@ Las fuentes realmente consultadas, en formato APA 7, se detallan en `docs/inform
 
 ## 16. Anexos
 
-Los anexos viven en `docs/informe/anexos.md` e incluyen el enlace real al repositorio, los listados de autómatas completos, las salidas extensas de ambos programas, la evidencia de los comandos de verificación y la lista de comprobación contra la rúbrica con el archivo o prueba que respalda cada dimensión.
+Los anexos viven en `docs/informe/anexos.md` e incluyen el enlace real al repositorio, los listados de autómatas completos, las figuras gráficas incorporadas al PDF, las salidas extensas de ambos programas, la evidencia de los comandos de verificación y la lista de comprobación contra la rúbrica con el archivo o prueba que respalda cada dimensión.

@@ -1,3 +1,4 @@
 # Dependencias de ejecución: solo biblioteca estándar.
-# Dependencia de desarrollo para la suite: pytest.
+# Dependencias de desarrollo y documentación.
 pytest>=8
+reportlab>=4
