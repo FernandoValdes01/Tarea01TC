@@ -8,7 +8,7 @@ from os import PathLike
 
 from .errors import LexicalError, LexicalErrorKind
 from .symbol_table import STORED_TOKEN_TYPES, SymbolTable
-from .tokens import Token, TokenType
+from .tokens import OPERATOR_FAMILY, Token, TokenType
 
 
 ASCII_LOWER = frozenset("abcdefghijklmnopqrstuvwxyz")
@@ -19,35 +19,9 @@ ATOM_CONT = ASCII_LOWER | ASCII_DIGITS | {"_"}
 INTEGER_RE = re.compile(r"[0-9]+")
 REAL_RE = re.compile(r"[0-9]+\.[0-9]+")
 
-OPERATOR_FAMILIES: dict[str, str] = {
-    ":-": "CLAUSE",
-    "?-": "QUERY",
-    "-->": "DCG",
-    "=": "UNIFICATION_COMPARISON",
-    r"\=": "UNIFICATION_COMPARISON",
-    "==": "UNIFICATION_COMPARISON",
-    r"\==": "UNIFICATION_COMPARISON",
-    "=..": "UNIFICATION_COMPARISON",
-    "<": "UNIFICATION_COMPARISON",
-    "=<": "UNIFICATION_COMPARISON",
-    ">": "UNIFICATION_COMPARISON",
-    ">=": "UNIFICATION_COMPARISON",
-    "+": "ARITHMETIC",
-    "-": "ARITHMETIC",
-    "*": "ARITHMETIC",
-    "/": "ARITHMETIC",
-    "//": "ARITHMETIC",
-    "**": "ARITHMETIC",
-    "is": "ARITHMETIC",
-    "mod": "ARITHMETIC",
-    r"\+": "CONTROL",
-    "!": "CONTROL",
-    ";": "CONTROL",
-}
-
 SYMBOLIC_OPERATORS = tuple(
     sorted(
-        (operator for operator in OPERATOR_FAMILIES if operator not in {"is", "mod"}),
+        (operator for operator in OPERATOR_FAMILY if operator not in {"is", "mod"}),
         key=len,
         reverse=True,
     )
@@ -298,7 +272,7 @@ class Lexer:
                     lexeme,
                     start_line,
                     start_column,
-                    OPERATOR_FAMILIES[lexeme],
+                    OPERATOR_FAMILY[lexeme],
                 )
             else:
                 self._emit(TokenType.ATOM, lexeme, start_line, start_column)
@@ -322,7 +296,7 @@ class Lexer:
                     operator,
                     self.line,
                     self.column,
-                    OPERATOR_FAMILIES[operator],
+                    OPERATOR_FAMILY[operator],
                 )
                 return True
         return False

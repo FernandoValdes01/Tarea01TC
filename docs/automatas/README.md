@@ -66,14 +66,12 @@ Los diagramas editables Mermaid se renderizan y componen en páginas A4 mediante
 python tools/build_report_diagrams.py
 ```
 
-El resultado es `docs/informe/automatas_appendix.pdf`. La fuente LaTeX incluye
-ese anexo cuando el archivo está presente y el PDF entregable se actualiza con:
+El resultado es `docs/informe/automatas_appendix.pdf`. El informe completo se
+genera desde el Markdown canónico y agrega automáticamente este anexo con:
 
 ```bash
-pdfunite /tmp/Tarea_FernandoValdes_base.pdf \
-  docs/informe/automatas_appendix.pdf docs/informe/Tarea_FernandoValdes.pdf
+python tools/build_final_report.py
 ```
 
-Con LaTeX instalado, la alternativa preferida es ejecutar dos pasadas de
-`pdflatex` sobre `docs/informe/informe_tecnico.tex`: la fuente ya incluye el
-anexo mediante `pdfpages`.
+El entregable resultante es `docs/informe/Tarea_Fernando_Valdes.pdf`; también se
+actualiza el nombre histórico sin guion para no romper enlaces previos.

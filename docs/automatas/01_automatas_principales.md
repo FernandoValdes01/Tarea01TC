@@ -34,7 +34,7 @@ El AFD es `M_A = (Q_A, Σ_A, δ_A, a0, F_A)`:
 | `∅` | `∅` | `∅` | `∅` | No |
 
 La tabla separa `LOWER` de `DIGIT` y `_` porque solo una minúscula puede iniciar
-el lexema. Una mayúscula tampoco pertenece a `C_A`, de acuerdo con el Prompt 01.
+el lexema. Una mayúscula tampoco pertenece a `C_A`, de acuerdo con la especificación léxica.
 
 [Fuente Mermaid de la figura 1](diagramas/atomos.mmd)
 
@@ -358,7 +358,7 @@ es la definición completa de las rutas y de su salida:
 | `:-`, `?-` | solo el lexema completo | `OPERATOR`; `:` y `?` aislados no aceptan |
 
 La coma se incluye porque el enunciado pide mostrar esa rama junto a los
-operadores. El contrato del Prompt 01 la clasifica como `COMMA`, y este documento
+operadores. La especificación léxica la clasifica como `COMMA`, y este documento
 conserva esa clasificación. Del mismo modo, antes de entrar en la rama `/`, el
 lexer prueba el comentario de bloque para que `/*` no se divida en dos
 operadores.

@@ -47,11 +47,14 @@ def draw_diagram_page(canvas: Canvas, title: str, png: Path) -> None:
     image = ImageReader(str(png))
     image_width, image_height = image.getSize()
     ratio = image_width / image_height
-    page_size = landscape(A4) if ratio < 0.8 else A4
+    # Los diagramas anchos aprovechan una página apaisada; los altos (como el
+    # trie de operadores) permanecen en vertical. La condición anterior estaba
+    # invertida y reducía las figuras a una fracción de la página.
+    page_size = landscape(A4) if ratio > 1.15 else A4
     page_width, page_height = page_size
 
-    margin = 36
-    title_height = 42
+    margin = 28
+    title_height = 36
     max_width = page_width - 2 * margin
     max_height = page_height - 2 * margin - title_height
     scale = min(max_width / image_width, max_height / image_height)

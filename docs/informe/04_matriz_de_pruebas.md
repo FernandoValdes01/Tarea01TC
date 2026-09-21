@@ -5,7 +5,7 @@ Suite: `tests/test_lexer.py` + corpus en `tests/corpus/`.
 Resultado real obtenido con `uv run --with pytest python -m pytest -q`: `85 passed` (sin fallos).
 Verificación adicional: `python3 -m compileall src tests` sin errores y `git diff --check` limpio.
 
-Nota sobre `12abc`: el Prompt 03 exige consumir la secuencia como un solo `MALFORMED_NUMBER`. La sección 8 del contrato incorpora esta recuperación para sufijos de identificador y `P21` la verifica. El mínimo de 8 inválidas también se cumple con `I01`–`I16`.
+Nota sobre `12abc`: el contrato exige consumir la secuencia como un solo `MALFORMED_NUMBER`. La sección 8 de la especificación incorpora esta recuperación para sufijos de identificador y `P21` la verifica. El mínimo de 8 inválidas también se cumple con `I01`–`I16`.
 
 Nota sobre `5.` a fin de cláusula: `mod 5.` es `MALFORMED_NUMBER` según el contrato (sección 7.1). Los archivos válidos usan `5 .` con espacio para separar `INTEGER` y `DOT`.
 

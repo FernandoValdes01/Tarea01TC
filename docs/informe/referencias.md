@@ -11,7 +11,7 @@ Solo se listan fuentes efectivamente consultadas, en formato APA 7. No se invent
 - Astral Software. (2026). _uv documentation_. https://docs.astral.sh/uv/ (Consultada para ejecutar la suite sin instalación global con `uv run --with pytest`.)
 - ISO/IEC. (1995). _ISO/IEC 13211-1:1995. Information technology — Programming languages — Prolog — Part 1: General core_. Citada como referencia general de la notación que inspira el subconjunto; el alcance exigible es el del enunciado y el del contrato, no la norma completa.
 
-## Pendientes explícitos (no consultados por ausencia)
+## Fuentes locales de organización
 
-- `agents.md` no existe en el repositorio `Tarea01TC` ni en su directorio padre al 17 de septiembre de 2026; no se cita contenido suyo.
-- `Formato Informe Tarea.pdf` no se localizó en las rutas indicadas; la estructura del informe sigue la sección 8 del enunciado y los requisitos del encargo, sin placeholders de plantilla.
+- `agents.md` fue consultado como instrucción de trabajo y fuente de las rutas de verdad del proyecto.
+- `../teoria-computacion/tareas/Formato Informe Tarea.pdf` fue consultado para la portada, la organización del informe, las tablas de especificación, errores y pruebas, y la presentación de anexos. Sus orientaciones se aplicaron sin conservar placeholders.

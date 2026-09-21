@@ -355,9 +355,8 @@ aceptaciones en una secuencia única de tokens.
 La notación y el procedimiento siguen las fuentes exigidas para esta etapa:
 
 1. `Tarea INFO1148 sem2_2026.pdf`, apartados 3, 4 y 10.
-2. Las instrucciones `agents.md` entregadas con el repositorio y la ejecución de
-   la tarea. El archivo no está presente materialmente en esta copia del árbol.
-3. `docs/informe/01_especificacion_lexica.md`, contrato del Prompt 01.
+2. Las instrucciones `agents.md` presentes en la raíz del repositorio.
+3. `docs/informe/01_especificacion_lexica.md`, contrato léxico del proyecto.
 4. `../teoria-computacion/clases/semana3/sesion3_TC.pdf`, definición de AFN,
    transiciones `ε` y `ε`-cerradura.
 5. `../teoria-computacion/clases/semana3/sesion4_Lenguajes_Regulares.html`,

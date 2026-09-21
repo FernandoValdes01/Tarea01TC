@@ -301,7 +301,7 @@ cada escape detectado. Si además no cierra, se registra también el error de ci
 se inventa un token parcial para una cadena o átomo inválido.
 
 El detector numérico se activa cuando el cursor está en un dígito o en `.` seguido de
-un dígito. Consume la máxima corrida contigua de dígitos y puntos. El Prompt 03 amplía
+un dígito. Consume la máxima corrida contigua de dígitos y puntos. La política de recuperación amplía
 la recuperación: si la corrida queda seguida inmediatamente por caracteres de
 identificador, estos también se consumen para que `12abc` sea un solo error. Un punto
 posterior a ese sufijo ya es un separador seguro. Así, un punto aislado continúa siendo
