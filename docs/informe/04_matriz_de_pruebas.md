@@ -107,9 +107,9 @@ Nota sobre `5.` a fin de cláusula: `mod 5.` es `MALFORMED_NUMBER` según el con
 | T12 | `-12`                              | signo como operador          | `-` 1:1 + `12` 1:2                      | `test_menos_doce_es_operador_mas_entero`                       | 2 tokens como lo esperado                        | OK     |
 | F01 | `entradas/programa_valido.pl`      | archivo válido completo      | 0 errores, 17 tipos y 6 familias        | `test_archivo_valido_sin_errores_y_con_categorias`             | 0 errores, cobertura completa                    | OK     |
 | F02 | `entradas/programa_con_errores.pl` | archivo con errores          | >=8 errores, recuperación, bloque final | `test_archivo_con_errores_recupera_y_bloque_final_no_recupera` | 12 errores en 12 líneas, recuperación verificada | OK     |
-| F03 | `corpus/validos/*.pl`              | 8 archivos válidos           | 0 errores cada uno                      | `test_corpus_validos_en_disco_sin_errores`                     | 8/8 sin errores                                  | OK     |
-| F04 | `corpus/invalidos/*.pl`            | 6 archivos inválidos         | >=1 error cada uno                      | `test_corpus_invalidos_en_disco_con_error`                     | 6/6 con error                                    | OK     |
-| F05 | conteo                             | mínimo de corpus             | >=20 V, >=14 P, >=8 I, 2 archivos       | `test_minimo_de_corpus`                                        | 26 V, 22 P, 16 I, 2 archivos                     | OK     |
+| F03 | `corpus/validos/*.pl`              | 20 archivos válidos          | 0 errores cada uno                      | `test_corpus_validos_en_disco_sin_errores`                     | 20/20 sin errores                                | OK     |
+| F04 | `corpus/invalidos/*.pl`            | 8 archivos inválidos         | >=1 error cada uno                      | `test_corpus_invalidos_en_disco_con_error`                     | 8/8 con error                                    | OK     |
+| F05 | conteo                             | mínimo de corpus             | >=20 V, >=14 P, >=8 I, 2 archivos       | `test_minimo_de_corpus`                                        | 27 V, 22 P, 16 I, 20/8 archivos, 2 entradas      | OK     |
 
 ## Comandos ejecutados
 

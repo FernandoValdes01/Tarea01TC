@@ -933,7 +933,7 @@ def test_archivo_con_errores_recupera_y_bloque_final_no_recupera() -> None:
 def test_corpus_validos_en_disco_sin_errores() -> None:
     """F03: todos los .pl de validos/ deben lexear sin errores."""
     files = sorted(VALIDOS_DIR.glob("*.pl"))
-    assert len(files) >= 1
+    assert len(files) >= 20, f"archivos válidos: {len(files)}"
     for path in files:
         result = tokenize_file(str(path))
         assert result.errors == [], f"{path.name}: {result.errors}"
@@ -943,7 +943,7 @@ def test_corpus_validos_en_disco_sin_errores() -> None:
 def test_corpus_invalidos_en_disco_con_error() -> None:
     """F04: todos los .pl de invalidos/ deben producir al menos un error."""
     files = sorted(INVALIDOS_DIR.glob("*.pl"))
-    assert len(files) >= 1
+    assert len(files) >= 8, f"archivos inválidos: {len(files)}"
     for path in files:
         result = tokenize_file(str(path))
         assert len(result.errors) >= 1, f"{path.name} sin errores"

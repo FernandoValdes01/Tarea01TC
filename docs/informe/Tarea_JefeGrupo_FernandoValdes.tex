@@ -192,7 +192,7 @@ Quedan fuera del alcance el análisis sintáctico y semántico: no se verifica e
   \hline
   \code{STRING} & Comillas dobles, escapes válidos, sin salto real. & \code{\bs"(\bs\bs["\bs nrt]|\allowbreak[\^"\bs\bs\bs n\bs r])*\bs"} & \code{"hola"}, \code{"dice"} & \code{"sin cierre}, \code{"a\bs q"} & índice $i$ \\
   \hline
-  \code{OPERATOR} & Operador exacto; se prueba por longitud descendente. & \code{-->|\allowbreak\bs==|\allowbreak=..|\allowbreak==|\allowbreak\bs=|\allowbreak=<|\allowbreak>=|\allowbreak:-|\allowbreak?-|\allowbreak//|\allowbreak\bs*\bs*|\allowbreak=|\allowbreak<|\allowbreak>|\allowbreak/|\allowbreak\bs*|\allowbreak\bs+|\allowbreak-|\allowbreak\bs+|\allowbreak!|\allowbreak;|\allowbreak is|\allowbreak mod} & \code{:-}, \code{?-}, \code{-->}, \code{=..}, \code{//}, \code{mod} & \code{:}, \code{?}, \code{\bs} (sola) & familia \\
+  \code{OPERATOR} & Operador exacto; se prueba por longitud descendente. & \code{-->|\allowbreak\bs\bs==|\allowbreak=\bs.\bs.|\allowbreak==|\allowbreak\bs\bs=|\allowbreak=<|\allowbreak>=|\allowbreak:-|\allowbreak\bs?-|\allowbreak//|\allowbreak\bs*\bs*|\allowbreak=|\allowbreak<|\allowbreak>|\allowbreak/|\allowbreak\bs*|\allowbreak\bs+|\allowbreak-|\allowbreak\bs\bs\bs+|\allowbreak!|\allowbreak;|\allowbreak is(?![A-Za-z0-9\_])|\allowbreak mod(?![A-Za-z0-9\_])} & \code{:-}, \code{?-}, \code{-->}, \code{=..}, \code{//}, \code{mod} & \code{:}, \code{?}, \code{\bs} (sola) & familia \\
   \hline
   Delimitadores & Nueve símbolos de un carácter, un token cada uno. & \code{\bs(|\allowbreak\bs)|\allowbreak\bs[|\allowbreak\bs]|\allowbreak\bs\{|\allowbreak\bs\}|\allowbreak\bs||\allowbreak,|\allowbreak\bs.} & \code{( ) [ ] \{ \} | , .} & \code{@} (no es delimitador) & — \\
   \hline
@@ -445,6 +445,7 @@ Para minimizar el AFD como clasificador de tokens, la partición inicial separa 
 
 \begin{figure}[H]
   \centering
+  \resizebox{\textwidth}{!}{%
   \begin{tikzpicture}[node distance=2.2cm]
     \node[breve, initial] (A) {$A$};
     \node[acept, above right=1.0cm and 2.0cm of A] (B) {$B$};
@@ -465,6 +466,7 @@ Para minimizar el AFD como clasificador de tokens, la partición inicial separa 
     \draw[flecha, dashed] (F) -- node[above]{\code{=, \textbackslash}} (Z);
     \draw[flecha, dashed] (Z) to[loop right] node[right]{\code{=, \textbackslash}} (Z);
   \end{tikzpicture}
+  }
   \caption{AFD mínimo etiquetado, con estado sumidero.}
 \end{figure}
 
@@ -621,7 +623,7 @@ El caso \code{5.} ilustra la prioridad del reconocedor numérico: el analizador 
   \hline
   I02 & Átomo sin cierre + línea válida & Recuperación tras salto & Error y tokens en línea 2 & Error y tokens en línea 2 & OK \\
   \hline
-  F01 & \code{programa\_valido.pl} & Cobertura integral & 207 tokens, 0 errores & 207 tokens, 0 errores, 17 tipos y 6 familias & OK \\
+  F01 & \code{programa\_\allowbreak valido.pl} & Cobertura integral & 207 tokens, 0 errores & 207 tokens, 0 errores, 17 tipos y 6 familias & OK \\
   \hline
   F02 & \code{programa\_\allowbreak con\_\allowbreak errores.pl} & Diagnósticos y continuidad & 69 tokens y 12 errores & 69 tokens, 12 errores y 28 entradas & OK \\
   \hline
@@ -651,12 +653,12 @@ Las limitaciones son que el lexer solo reconoce el subconjunto contratado y que 
 \begin{itemize}
   \item Lévano, M. (2026). \textit{Tarea: análisis léxico del lenguaje Prolog. Investigación, análisis, diseño, implementación y validación} (INFO1148, sem2\_2026). Enunciado del curso.
   \item ISO/IEC. (1995). \textit{ISO/IEC 13211-1:1995. Information technology---Programming languages---Prolog---Part 1: General core}.
-  \item Python Software Foundation. (2026). \textit{Regular expression operations (re)}. https://docs.python.org/3/library/re.html
-  \item pytest-dev team. (2026). \textit{pytest documentation}. https://docs.pytest.org/
-  \item Astral Software. (2026). \textit{uv documentation}. https://docs.astral.sh/uv/
-  \item SWI-Prolog. (s. f.). \textit{SWI-Prolog documentation}. https://www.swi-prolog.org/
-  \item Equipo de la asignatura INFO1148. (2026). \textit{Formato Informe Tarea}. Documento consultado en \code{docs/referencias/\allowbreak Formato Informe Tarea.pdf}.
-  \item Equipo de trabajo. (2026). \textit{Especificación léxica contractual, matriz de pruebas y código del analizador}. Repositorio https://github.com/FernandoValdes01/Tarea01TC.
+  \item Python Software Foundation. (2026). \textit{Regular expression operations (re)}. \url{https://docs.python.org/3/library/re.html}
+  \item pytest-dev team. (2026). \textit{pytest documentation}. \url{https://docs.pytest.org/}
+  \item Astral Software. (2026). \textit{uv documentation}. \url{https://docs.astral.sh/uv/}
+  \item SWI-Prolog. (s. f.). \textit{SWI-Prolog documentation}. \url{https://www.swi-prolog.org/}
+  \item Equipo de la asignatura INFO1148. (2026). \textit{Formato Informe Tarea}. Archivo local \code{Formato Informe Tarea.pdf}. Directorio: \path{docs/referencias/}.
+  \item Equipo de trabajo. (2026). \textit{Especificación léxica contractual, matriz de pruebas y código del analizador}. Repositorio \url{https://github.com/FernandoValdes01/Tarea01TC}.
 \end{itemize}
 
 % --------------------------------------------------------------------------
@@ -667,13 +669,21 @@ Las limitaciones son que el lexer solo reconoce el subconjunto contratado y que 
   \hline
   \rowcolor{darkblue}\multicolumn{1}{|c|}{\color{white}\bfseries Recurso} & \multicolumn{1}{c|}{\color{white}\bfseries Enlace} \\
   \hline
-  Repositorio Git & https://github.com/FernandoValdes01/Tarea01TC \\
+  Repositorio Git & \url{https://github.com/FernandoValdes01/Tarea01TC} \\
   \hline
 \end{tabularx}
 
 \subsection{Anexo A. Evidencias adicionales}
 
-El contenido canónico del informe está en \code{docs/informe/Tarea\_JefeGrupo\_FernandoValdes.tex}; los nombres, fecha, autoría y resultados corresponden al trabajo de Fernando Alonso Valdés Gómez, Juan Francisco Muñoz Veloso y Vicente Rodrigo Rivera Sánchez. La especificación contractual vive en \code{docs/informe/01\_especificacion\_lexica.md} y la matriz completa en \code{docs/informe/04\_matriz\_de\_pruebas.md}. El código está en \code{src/} y el corpus en \code{tests/corpus/}.
+El contenido canónico del informe está en
+\path{docs/informe/Tarea_JefeGrupo_FernandoValdes.tex}. Los nombres, fecha,
+autoría y resultados corresponden al trabajo de Fernando Alonso Valdés Gómez,
+Juan Francisco Muñoz Veloso y Vicente Rodrigo Rivera Sánchez.
+
+La especificación contractual vive en
+\path{docs/informe/01_especificacion_lexica.md} y la matriz completa en
+\path{docs/informe/04_matriz_de_pruebas.md}. El código está en \path{src/} y el
+corpus en \path{tests/corpus/}.
 
 Comandos ejecutados desde la raíz del repositorio:
 

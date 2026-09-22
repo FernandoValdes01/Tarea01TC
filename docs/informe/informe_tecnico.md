@@ -187,7 +187,7 @@ La salida real del archivo con errores contiene exactamente estos 12 diagnóstic
 
 ## 9. Plan de pruebas y resultados
 
-La suite `tests/test_lexer.py` suma 86 pruebas: 3 del modelo `Token`, 27 válidas `V01`–`V27` con tokens y posiciones exactas, 22 de prioridad `P01`–`P22`, 16 inválidas `I01`–`I16` con clase, fragmento, posición y recuperación, 12 transversales `T01`–`T12` de posiciones, comentarios, escapes, tabla y acumulación, y 6 de archivos `F01`–`F06` incluyendo lectura de los dos programas completos, de los 8 archivos de `validos/` y de los 6 de `invalidos/`, más la verificación del mínimo de corpus. La matriz completa con el resultado real de cada caso vive en `docs/informe/04_matriz_de_pruebas.md`.
+La suite `tests/test_lexer.py` suma 86 pruebas: 3 del modelo `Token`, 27 válidas `V01`–`V27` con tokens y posiciones exactas, 22 de prioridad `P01`–`P22`, 16 inválidas `I01`–`I16` con clase, fragmento, posición y recuperación, 12 transversales `T01`–`T12` de posiciones, comentarios, escapes, tabla y acumulación, y 6 de archivos `F01`–`F06` incluyendo lectura de los dos programas completos, de los 20 archivos de `validos/` y de los 8 de `invalidos/`, más la verificación del mínimo de corpus. La matriz completa con el resultado real de cada caso vive en `docs/informe/04_matriz_de_pruebas.md`.
 
 | ID | Entrada o archivo | Objetivo | Resultado esperado | Resultado obtenido | Estado |
 | -- | ----------------- | -------- | ------------------ | ------------------ | ------ |
