@@ -460,14 +460,14 @@ Para minimizar el AFD como clasificador de tokens, la partición inicial separa 
     \draw[flecha] (B) -- node[above]{\code{=}} (C);
     \draw[flecha] (D) -- node[below]{\code{=}} (E);
     \draw[flecha] (E) -- node[below]{\code{=}} (F);
-    \draw[flecha, dashed] (B) -- node[pos=0.52, below, yshift=-0.12cm, fill=white, inner sep=1pt]{\code{\textbackslash}} (Z);
-    \draw[flecha, dashed] (C) -- node[pos=0.62, above, yshift=0.12cm, fill=white, inner sep=1pt]{\code{=, \textbackslash}} (Z);
-    \draw[flecha, dashed] (D) to[bend right=34] node[pos=0.5, below, yshift=-0.1cm, fill=white, inner sep=1pt]{\code{\textbackslash}} (Z);
-    \draw[flecha, dashed] (E) to[bend left=18] node[pos=0.28, above, yshift=0.1cm, fill=white, inner sep=1pt]{\code{\textbackslash}} (Z);
-    \draw[flecha, dashed] (F) -- node[pos=0.5, above, yshift=0.12cm, fill=white, inner sep=1pt]{\code{=, \textbackslash}} (Z);
+    \draw[flecha, dashed] (B) to[bend right=12] node[pos=0.45, below, yshift=-0.14cm, fill=white, inner sep=1pt]{\code{\textbackslash}} (Z.138);
+    \draw[flecha, dashed] (C) -- node[pos=0.58, above, yshift=0.14cm, fill=white, inner sep=1pt]{\code{=, \textbackslash}} (Z.122);
+    \draw[flecha, dashed] (D) to[bend right=34] node[pos=0.5, below, yshift=-0.1cm, fill=white, inner sep=1pt]{\code{\textbackslash}} (Z.232);
+    \draw[flecha, dashed] (E) to[bend left=18] node[pos=0.30, above, yshift=0.12cm, fill=white, inner sep=1pt]{\code{\textbackslash}} (Z.160);
+    \draw[flecha, dashed] (F) -- node[pos=0.32, above, yshift=0.12cm, fill=white, inner sep=1pt]{\code{=, \textbackslash}} (Z.180);
     \draw[flecha, dashed] (Z) to[loop right] node[right]{\code{=, \textbackslash}} (Z);
     \node[below=0.22cm of B, align=center]{\code{OP\_EQ}};
-    \node[below=0.22cm of C, align=center]{\code{OP\_EQEQ}};
+    \node[below=0.38cm of C, align=center]{\code{OP\_EQEQ}};
     \node[below=0.22cm of E, align=center]{\code{OP\_NEQ}};
     \node[below=0.22cm of F, align=center]{\code{OP\_NEQEQ}};
   \end{tikzpicture}
