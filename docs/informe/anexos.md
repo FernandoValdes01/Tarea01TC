@@ -2,7 +2,7 @@
 
 ## Anexo A. Enlace al repositorio
 
-Repositorio real de entrega: https://github.com/FernandoValdes01/Tarea01TC (remoto `origin` verificado con `git remote -v`). El contenido canónico del informe está en `docs/informe/informe_tecnico.md` y el PDF final se genera con el comando documentado en el Anexo C. Integrantes: Fernando Valdes, Juan Muñoz Veloso y Vicente Rivera.
+Repositorio real de entrega: https://github.com/FernandoValdes01/Tarea01TC (remoto `origin` verificado con `git remote -v`). El contenido canónico del informe está en `docs/informe/informe_tecnico.md` y el PDF final se genera con el comando documentado en el Anexo C. Integrantes: Fernando Valdés, Juan Muñoz y Vicente Rivera.
 
 ## Anexo B. Autómatas completos
 

@@ -172,26 +172,25 @@ def poly_transition(c: Canvas, points: list[tuple[float, float]], label: str, lx
 
 
 def loop(c: Canvas, node: Node, label: str, radius: float = 23, above: bool = True) -> None:
+    # El arco nace y termina en puntos diagonales de la circunferencia. La
+    # punta queda exactamente sobre el borde y apunta hacia el estado, de modo
+    # que el bucle no parece flotar ni terminar dentro del círculo.
     direction = 1 if above else -1
-    # La unión debe quedar sobre la circunferencia, no sobre el cuadrado
-    # delimitador del estado. Esto evita el pequeño espacio que se veía entre
-    # el bucle y el estado en los diagramas de números y comentarios.
-    attach_x = radius * 0.46
-    attach_y = math.sqrt(radius * radius - attach_x * attach_x)
-    start_x = node.x - attach_x
-    end_x = node.x + attach_x
-    base_y = node.y + direction * attach_y
-    control_y = node.y + direction * (radius + 39)
-    y = node.y + direction * radius
+    angle_start = math.radians(135 if above else 225)
+    angle_end = math.radians(45 if above else 315)
+    start_x = node.x + radius * math.cos(angle_start)
+    start_y = node.y + radius * math.sin(angle_start)
+    end_x = node.x + radius * math.cos(angle_end)
+    end_y = node.y + radius * math.sin(angle_end)
+    control_y = node.y + direction * radius * 2.25
     c.setStrokeColor(INK)
     c.setLineWidth(1.0)
     path = c.beginPath()
-    path.moveTo(start_x, base_y)
-    path.curveTo(node.x - radius * 1.35, control_y, node.x + radius * 1.35, control_y, end_x, base_y)
+    path.moveTo(start_x, start_y)
+    path.curveTo(node.x - radius * 1.30, control_y, node.x + radius * 1.30, control_y, end_x, end_y)
     c.drawPath(path, stroke=1, fill=0)
-    # El último tramo desciende hacia el estado cuando el bucle está arriba,
-    # y asciende hacia el estado cuando está abajo.
-    arrow_head(c, end_x, base_y, -math.pi / 2 if above else math.pi / 2)
+    tangent_angle = math.radians(-135 if above else 135)
+    arrow_head(c, end_x, end_y, tangent_angle, size=5.5)
     label_box(c, node.x, node.y + direction * (radius + 37), label)
 
 
@@ -382,7 +381,7 @@ def subset_diagram(c: Canvas, number: int, title: str, subtitle: str) -> None:
 
 def build(output: Path) -> None:
     output.parent.mkdir(parents=True,exist_ok=True)
-    c=Canvas(str(output),pagesize=landscape(A4),pageCompression=1); c.setTitle("Anexo de autómatas - analizador léxico de Prolog"); c.setAuthor("Fernando Valdes, Juan Muñoz Veloso y Vicente Rivera")
+    c=Canvas(str(output),pagesize=landscape(A4),pageCompression=1); c.setTitle("Anexo de autómatas - analizador léxico de Prolog"); c.setAuthor("Fernando Valdés, Juan Muñoz y Vicente Rivera")
     appendix_overview(c); c.showPage()
     for draw in (diagram_1,diagram_2,diagram_3,diagram_4,diagram_5,diagram_6,diagram_7): draw(c); c.showPage()
     subset_diagram(c,8,"AFD obtenido por construcción de subconjuntos","Cada estado representa un conjunto de estados del AFN; las salidas conservan la clasificación léxica."); c.showPage()

@@ -6,7 +6,7 @@
 | ----------- | --------------------------------------------------------------------------------------- |
 | Curso       | INFO1148, Teoría de la Computación                                                      |
 | Título      | Análisis léxico del lenguaje Prolog: investigación, diseño, implementación y validación |
-| Integrantes | Fernando Valdes; Juan Muñoz Veloso; Vicente Rivera                                  |
+| Integrantes | Fernando Valdés; Juan Muñoz; Vicente Rivera                                            |
 | Profesor    | Prof. M. Lévano                                                                         |
 | Fecha       | 17 de septiembre de 2026                                                                |
 | Repositorio | https://github.com/FernandoValdes01/Tarea01TC                                           |

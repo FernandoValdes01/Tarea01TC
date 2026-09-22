@@ -346,7 +346,7 @@ def build_base_pdf(output: Path) -> None:
         topMargin=1.8 * cm,
         bottomMargin=1.8 * cm,
         title="Análisis léxico del lenguaje Prolog",
-        author="Fernando Valdes; Juan Muñoz Veloso; Vicente Rivera",
+        author="Fernando Valdés; Juan Muñoz; Vicente Rivera",
     )
     document.regular_font = regular
     width = A4[0] - 4 * cm
@@ -402,7 +402,7 @@ def build_base_pdf(output: Path) -> None:
     story.append(Spacer(1, 1.35 * cm))
     cover_data = [
         ["ASIGNATURA", "Teoría de la Computación · INFO1148"],
-        ["ESTUDIANTES", "Fernando Valdes · Juan Muñoz Veloso · Vicente Rivera"],
+        ["ESTUDIANTES", "Fernando Valdés · Juan Muñoz · Vicente Rivera"],
         ["PROFESOR", "Prof. M. Lévano"],
         ["ENTREGA", "17 de septiembre de 2026"],
         ["REPOSITORIO", "github.com/FernandoValdes01/Tarea01TC"],
