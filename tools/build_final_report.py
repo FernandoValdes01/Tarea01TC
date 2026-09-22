@@ -235,7 +235,7 @@ def parse_markdown(
     available_width: float,
 ) -> list:
     lines = text.splitlines()
-    start = next(i for i, line in enumerate(lines) if line.strip() == "### Resumen ejecutivo")
+    start = next(i for i, line in enumerate(lines) if line.strip() == "### Resumen")
     lines = lines[start:]
     story: list = []
     paragraph: list[str] = []
@@ -358,7 +358,7 @@ def build_base_pdf(output: Path) -> None:
     story.extend([logo, Spacer(1, 1.8 * cm)])
     story.append(
         Paragraph(
-            "INFORME ACADÉMICO",
+            "INFORME DE TAREA",
             ParagraphStyle(
                 "CoverTitle",
                 fontName=bold,

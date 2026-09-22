@@ -14,4 +14,4 @@ Solo se listan fuentes efectivamente consultadas, en formato APA 7. No se invent
 ## Fuentes locales de organización
 
 - Las instrucciones de trabajo usadas durante la preparación fueron proporcionadas externamente y no forman parte del repositorio entregable.
-- `../teoria-computacion/tareas/Formato Informe Tarea.pdf` fue consultado para la portada, la organización del informe, las tablas de especificación, errores y pruebas, y la presentación de anexos. Sus orientaciones se aplicaron sin conservar placeholders.
+- `../referencias/Formato Informe Tarea.pdf` fue consultado para la portada, la organización del informe, las tablas de especificación, errores y pruebas, y la presentación de anexos. Sus orientaciones se aplicaron sin conservar placeholders.

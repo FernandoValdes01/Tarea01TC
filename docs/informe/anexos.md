@@ -66,7 +66,7 @@ El PDF final se generó con `python tools/build_final_report.py`, que reutiliza 
 | Implementación del lexer (25)               | `src/` completo con posiciones 1-based, máxima coincidencia y prioridades; salidas reales de ambos programas; comandos de ejecución en el capítulo 9 y el Anexo C                                                    | Demostrado                     |
 | Pruebas y errores léxicos (15)              | `tests/test_lexer.py` con 85 pruebas (26 válidas, 22 de prioridad, 16 inválidas, 12 transversales, 6 de archivos), dos archivos completos y `docs/informe/04_matriz_de_pruebas.md` con resultado real                | Demostrado                     |
 | Informe, repositorio y presentación (15)    | `docs/informe/informe_tecnico.md`, `referencias.md`, `anexos.md` y PDF final con diagramas; README actualizado; `git remote` real en el Anexo A | Demostrado |
-| Pauta y fuentes de verdad                   | Las instrucciones de trabajo fueron proporcionadas externamente; el enunciado y `../teoria-computacion/tareas/Formato Informe Tarea.pdf` fueron localizados y revisados; el PDF final incorpora la estructura, tablas y anexos solicitados | Demostrado |
+| Pauta y fuentes de verdad                   | El enunciado y `docs/referencias/Formato Informe Tarea.pdf` fueron revisados; el PDF final incorpora la estructura, tablas y anexos solicitados | Demostrado |
 
 ## Anexo E. Estado final
 

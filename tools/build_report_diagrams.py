@@ -66,7 +66,8 @@ def page_header(c: Canvas, number: int, title: str, subtitle: str) -> None:
     c.rect(0, 0, width, height, stroke=0, fill=1)
     c.setFillColor(BLUE)
     c.setFont(MONO, 8)
-    c.drawString(34, height - 30, f"FIGURA {number:02d}  |  AUTÓMATAS DEL ANALIZADOR LÉXICO")
+    eyebrow = "ANEXO A  |  GUÍA DE LECTURA" if number == 0 else f"FIGURA {number:02d}  |  AUTÓMATAS DEL ANALIZADOR LÉXICO"
+    c.drawString(34, height - 30, eyebrow)
     c.setFillColor(NAVY)
     c.setFont(BOLD, 17)
     c.drawString(34, height - 54, title)
@@ -254,10 +255,10 @@ def small_node(c: Canvas, x: float, y: float, label: str, accepting: bool = Fals
     c.setFillColor(INK); c.setFont(BOLD,6.5); c.drawCentredString(x,y-2.3,label)
 
 
-def trie_edge(c: Canvas, a: tuple[float,float], b: tuple[float,float], label: str) -> None:
+def trie_edge(c: Canvas, a: tuple[float,float], b: tuple[float,float], label: str, label_shift: tuple[float,float] = (0, 7)) -> None:
     ax,ay=a; bx,by=b; dx,dy=bx-ax,by-ay; length=math.hypot(dx,dy); ux,uy=dx/length,dy/length
     x1,y1=ax+ux*12,ay+uy*12; x2,y2=bx-ux*12,by-uy*12
-    c.setStrokeColor(MUTED); c.setLineWidth(0.75); c.line(x1,y1,x2,y2); arrow_head(c,x2,y2,math.atan2(dy,dx),4); label_box(c,(x1+x2)/2,(y1+y2)/2+7,label)
+    c.setStrokeColor(MUTED); c.setLineWidth(0.75); c.line(x1,y1,x2,y2); arrow_head(c,x2,y2,math.atan2(dy,dx),4); label_box(c,(x1+x2)/2 + label_shift[0],(y1+y2)/2 + label_shift[1],label)
 
 
 def trie_panel(
@@ -266,7 +267,7 @@ def trie_panel(
     bottom: float,
     height: float,
     nodes: dict[str, tuple[float, float, bool]],
-    edges: list[tuple[str, str, str]],
+    edges: list[tuple],
 ) -> None:
     c.setFillColor(SINK_FILL)
     c.roundRect(38, bottom, 765, height, 5, stroke=0, fill=1)
@@ -274,8 +275,10 @@ def trie_panel(
     c.setFont(MONO, 6.5)
     c.drawString(48, bottom + height - 13, title)
     absolute = {key: (x, bottom + y) for key, (x, y, _) in nodes.items()}
-    for source, target, label in edges:
-        trie_edge(c, absolute[source], absolute[target], label)
+    for edge in edges:
+        source, target, label = edge[:3]
+        shift = edge[3] if len(edge) > 3 else (0, 7)
+        trie_edge(c, absolute[source], absolute[target], label, shift)
     for key, (x, y, accepting) in nodes.items():
         small_node(c, x, bottom + y, key, accepting)
 
@@ -284,16 +287,16 @@ def diagram_6(c: Canvas) -> None:
     page_header(c,6,"Trie de operadores","Organización por prefijo para aplicar máxima coincidencia antes de emitir el token.")
     trie_panel(c,"OPERADORES DE UN CARÁCTER",420,70,
         {"o0":(75,30,False),",":(300,46,True),"OP1":(550,22,True)},
-        [("o0",",",","),("o0","OP1","{+, !, ;, <}")])
+        [("o0",",",",",(0,10)),("o0","OP1","{+, !, ;, <}",(0,-10))])
     trie_panel(c,"PREFIJOS ARITMÉTICOS",320,88,
         {"o0":(75,37,False),"-":(235,62,True),"--":(400,62,False),"-->":(565,62,True),"*":(235,37,True),"**":(400,37,True),"/":(235,14,True),"//":(400,14,True)},
-        [("o0","-","-"),("-","--","-"),("--","-->",">"),("o0","*","*"),("*","**","*"),("o0","/","/"),("/","//","/")])
-    trie_panel(c,"COMPARACIÓN Y UNIFICACIÓN",188,120,
-        {"o0":(75,50,False),"=":(210,88,True),"==":(365,102,True),"=.":(365,78,False),"=..":(520,78,True),"=<":(365,57,True),">":(210,42,True),">=":(365,40,True),"\\":(210,14,False),"\\=":(365,8,True),"\\==":(520,8,True),"\\+":(365,24,True)},
-        [("o0","=","="),("=","==","="),("=","=.","."),("=.","=..","."),("=","=<","<"),("o0",">",">"),(">",">=","="),("o0","\\","\\"),("\\","\\=","="),("\\=","\\==","="),("\\","\\+","+")])
+        [("o0","-","-",(0,8)),("-","--","-",(0,8)),("--","-->",">",(0,8)),("o0","*","*",(0,7)),("*","**","*",(0,7)),("o0","/","/",(0,-7)),("/","//","/",(0,7))])
+    trie_panel(c,"COMPARACIÓN Y UNIFICACIÓN",180,128,
+        {"o0":(75,62,False),"=":(210,104,True),"==":(370,114,True),"=.":(370,91,False),"=..":(535,91,True),"=<":(370,68,True),">":(210,43,True),">=":(370,43,True),"\\":(210,16,False),"\\=":(370,29,True),"\\==":(535,29,True),"\\+":(370,6,True)},
+        [("o0","=","=",(0,8)),("=","==","=",(0,8)),("=","=.",".",(0,8)),("=.","=..",".",(0,8)),("=","=<","<",(0,8)),("o0",">",">",(0,7)),(">",">=","=",(0,7)),("o0","\\","\\",(0,-7)),("\\","\\=","=",(0,7)),("\\=","\\==","=",(0,7)),("\\","\\+","+",(0,-7))])
     trie_panel(c,"CLÁUSULAS Y PALABRAS RESERVADAS",68,108,
         {"o0":(75,43,False),":":(205,78,False),":-":(350,78,True),"?":(205,55,False),"?-":(350,55,True),"i":(205,32,False),"is":(350,32,True),"m":(205,9,False),"mo":(350,9,False),"mod":(500,9,True)},
-        [("o0",":",":"), (":",":-","-"),("o0","?","?"),("?","?-","-"),("o0","i","i"),("i","is","s"),("o0","m","m"),("m","mo","o"),("mo","mod","d")])
+        [("o0",":",":",(0,9)), (":",":-","-",(0,7)),("o0","?","?",(0,5)),("?","?-","-",(0,7)),("o0","i","i",(0,2)),("i","is","s",(0,7)),("o0","m","m",(0,-6)),("m","mo","o",(0,7)),("mo","mod","d",(0,7))])
     c.setFillColor(MUTED); c.setFont(REGULAR,7.2); c.drawRightString(795,52,"`is` y `mod` requieren frontera de palabra.")
     footer(c,"Vista compacta por familias de prefijos. Cada banda parte del estado inicial o0.")
 
@@ -372,9 +375,16 @@ def appendix_overview(c: Canvas) -> None:
 
 def subset_diagram(c: Canvas, number: int, title: str, subtitle: str) -> None:
     page_header(c,number,title,subtitle)
-    A=Node("A",105,320); B=Node("B",280,405,"OP_EQ",True); C=Node("C",475,405,"OP_EQEQ",True); D=Node("D",280,245); E=Node("E",475,245,"OP_NEQ",True); F=Node("F",660,245,"OP_NEQEQ",True); Z=Node("Z",660,105,sink=True)
+    A=Node("A",105,320); B=Node("B",280,405,"OP_EQ",True); C=Node("C",475,405,"OP_EQEQ",True); D=Node("D",280,245); E=Node("E",475,245,"OP_NEQ",True); F=Node("F",660,245,"OP_NEQEQ",True); Z=Node("Z",720,125,sink=True)
     start_arrow(c,A); transition(c,A,B,"="); transition(c,A,D,"\\"); transition(c,B,C,"="); transition(c,D,E,"="); transition(c,E,F,"=")
-    poly_transition(c,[(280,382),(280,130),(637,130)],"\\",315,141,True); poly_transition(c,[(475,382),(520,345),(637,128)],"=, \\",540,276,True); poly_transition(c,[(280,222),(280,105),(637,105)],"\\",350,116,True); poly_transition(c,[(475,222),(475,155),(641,120)],"\\",520,162,True); poly_transition(c,[(660,222),(660,128)],"=, \\",695,170,True); loop(c,Z,"=, \\",above=False)
+    # Cada rechazo entra por un punto distinto de Z. Las rutas se separan
+    # antes de llegar al sumidero y dejan libres las etiquetas de aceptación.
+    poly_transition(c,[(298,390),(315,350),(650,170),(706,144)],"\\",380,345,True)
+    poly_transition(c,[(493,390),(560,330),(675,210),(707,144)],"=, \\",560,300,True)
+    poly_transition(c,[(258,228),(258,88),(640,88),(698,117)],"\\",360,76,True)
+    poly_transition(c,[(493,228),(535,180),(660,130),(708,105)],"\\",570,166,True)
+    poly_transition(c,[(678,228),(690,175),(732,105)],"=, \\",705,172,True)
+    loop(c,Z,"=, \\",above=False)
     for n in (A,B,C,D,E,F,Z): state(c,n)
     c.setFillColor(MUTED); c.setFont(REGULAR,7.2); c.drawString(46,54,"Las líneas discontinuas llevan al sumidero Z; las rutas válidas permanecen en la zona superior."); footer(c)
 

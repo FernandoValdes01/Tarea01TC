@@ -11,7 +11,7 @@
 | Fecha       | 17 de septiembre de 2026                                                                |
 | Repositorio | https://github.com/FernandoValdes01/Tarea01TC                                           |
 
-### Resumen ejecutivo
+### Resumen
 
 Este informe presenta el análisis, diseño, implementación y validación de un analizador léxico para un subconjunto de Prolog inspirado en la notación de ISO Prolog y SWI-Prolog. El trabajo define formalmente el catálogo de tokens con una expresión regular por categoría, modela las categorías principales con autómatas finitos, muestra la determinización por construcción de subconjuntos y la minimización por refinamiento de particiones sobre un subconjunto representativo, e implementa el lexer en Python con recorrido de izquierda a derecha, máxima coincidencia y prioridades explícitas. El lexer emite tipo, lexema original, línea y columna por token, administra una tabla de lexemas con deduplicación por par tipo y lexema, y reporta seis clases de error con fragmento y posición continuando el análisis. La validación usa una suite de 85 pruebas automatizadas con 26 casos válidos, 22 de prioridad, 16 inválidos y dos archivos completos, con resultado real de 85 aprobadas y cero fallos.
 
@@ -33,7 +33,11 @@ Este informe documenta el subconjunto de Prolog reconocido, su especificación f
 
 ## 2. Objetivos
 
+### 2.1 Objetivo general
+
 El objetivo general es analizar, diseñar, implementar y validar un analizador léxico para un subconjunto definido de Prolog, aplicando alfabetos, lenguajes regulares, expresiones regulares y autómatas finitos, con pruebas reproducibles y diagnósticos verificables.
+
+### 2.2 Objetivos específicos
 
 Los objetivos específicos son: definir formalmente cada categoría con nombre de token, patrón, ejemplos válidos e inválidos y atributo asociado; construir una expresión regular por categoría resolviendo superposiciones con máxima coincidencia y prioridades; modelar las categorías principales con AFN o AFD y presentar un AFD integrado o una estrategia equivalente con estados de aceptación identificados; mostrar la determinización por construcción de subconjuntos y la minimización con justificación de equivalencias sobre un subconjunto representativo; implementar el lexer con posiciones 1-based, tabla de lexemas y seis clases de error recuperables; y validar con al menos 20 pruebas válidas, 8 inválidas, casos de prioridad y dos archivos completos, registrando el resultado real de la suite.
 
