@@ -2,7 +2,7 @@
 
 ## Anexo A. Enlace al repositorio
 
-Repositorio real de entrega: https://github.com/FernandoValdes01/Tarea01TC (remoto `origin` verificado con `git remote -v`). El contenido canónico del informe está en `docs/informe/informe_tecnico.md` y el PDF final se genera con el comando documentado en el Anexo C. Integrantes: Fernando Valdés, Juan Muñoz y Vicente Rivera.
+Repositorio real de entrega: https://github.com/FernandoValdes01/Tarea01TC (remoto `origin`). El contenido canónico del informe está en `docs/informe/Tarea_JefeGrupo_FernandoValdes.tex` y el PDF final se compila con `latexmk` en Docker (ver README). Integrantes: Fernando Alonso Valdés Gómez, Juan Francisco Muñoz Veloso y Vicente Rodrigo Rivera Sánchez.
 
 ## Anexo B. Autómatas completos
 
@@ -30,21 +30,20 @@ Figura 9 (AFD mínimo etiquetado): siete estados; las salidas de token distintas
   impiden fusionar los cuatro estados aceptores.
 ```
 
-Las versiones gráficas de estas figuras están incorporadas al PDF entregable
-en las páginas del `Anexo A. Diagramas de autómatas`. Se generan desde las
-fuentes de estados y transiciones versionadas con `python tools/build_report_diagrams.py`, evitando
-que el informe dependa de una captura manual o de una imagen no reproducible.
+Las versiones gráficas de estas figuras viven hoy en la sección 5 del informe final
+(en TikZ, sin anexo duplicado). Las fuentes de estados y transiciones siguen
+versionadas en `docs/automatas/diagramas/`, de modo que ningún diagrama depende
+de una captura manual o de una imagen no reproducible.
 
 ## Anexo C. Evidencia de comandos y salidas
 
-Comandos ejecutados desde la raíz del repositorio el 17 de septiembre de 2026:
+Comandos ejecutados desde la raíz del repositorio el 21 de septiembre de 2026:
 
 ```bash
 python -m compileall -q src tests tools
 uv run --with pytest python -m pytest -q
 python -m src.main tests/corpus/entradas/programa_valido.pl
 python -m src.main tests/corpus/entradas/programa_con_errores.pl
-python tools/build_final_report.py
 git diff --check
 git status --short
 ```
@@ -55,7 +54,7 @@ El programa válido produce 207 tokens, 0 errores y 48 entradas de tabla, con di
 
 El programa con errores produce 69 tokens, 12 errores y 28 entradas, con diagnósticos `UNTERMINATED_QUOTED_ATOM` en 3:6, `UNTERMINATED_STRING` en 5:6, `INVALID_CHARACTER('@')` en 7:6, `MALFORMED_NUMBER('5.')` en 8:6, `MALFORMED_NUMBER('.5')` en 9:6, `MALFORMED_NUMBER('1..2')` en 10:6, `INVALID_CHARACTER(':')` en 11:5, `INVALID_CHARACTER('?')` en 12:5, `INVALID_CHARACTER('\')` en 13:5, `INVALID_ESCAPE('\q')` en 14:8, `INVALID_ESCAPE('\q')` en 15:8 y `UNTERMINATED_BLOCK_COMMENT` en 17:1 hasta EOF.
 
-El PDF final se generó con `python tools/build_final_report.py`, que reutiliza `build_report_diagrams.py`, compone el informe desde Markdown y une el anexo mediante `pdfunite`. El entregable es `docs/informe/Tarea_JefeGrupo_FernandoValdes.pdf`. Se verificó con extracción de texto y conteo de páginas que los operadores `\==`, `=..`, `:-` y `?-` se ven correctamente y que las figuras son legibles.
+Histórico: en una versión anterior el PDF se generó con `python tools/build_final_report.py`, que reutilizaba `build_report_diagrams.py`, componía el informe desde Markdown y unía el anexo mediante `pdfunite`. El entregable actual es `docs/informe/Tarea_JefeGrupo_FernandoValdes.pdf`, compilado desde LaTeX. Se verificó con extracción de texto y conteo de páginas que los operadores `\==`, `=..`, `:-` y `?-` se ven correctamente y que las figuras son legibles.
 
 ## Anexo D. Lista de comprobación contra la rúbrica
 

@@ -60,20 +60,28 @@ npx --yes puppeteer browsers install chrome-headless-shell
 
 ## Inclusión en el informe PDF
 
-El informe usa una composición vectorial propia, con posiciones, rutas y
+> NOTA HISTÓRICA: el informe final ya no incorpora el anexo generado. Los
+> diagramas oficiales están dibujados en TikZ en la sección 5 de
+> `docs/informe/Tarea_JefeGrupo_FernandoValdes.tex`. Lo que sigue describe el
+> flujo antiguo, conservado como auxiliar.
+
+El informe usaba una composición vectorial propia, con posiciones, rutas y
 tipografía controladas para impresión. Los `.mmd` documentan la estructura y
 los `.svg` permiten una consulta rápida, pero el anexo no depende del diseño
-automático de Mermaid. Se genera mediante:
+automático de Mermaid. Se generaba mediante:
 
 ```bash
 python tools/build_report_diagrams.py
 ```
 
-El resultado es `docs/informe/automatas_appendix.pdf`. El informe completo se
-genera desde el Markdown canónico y agrega automáticamente este anexo con:
+El resultado es `docs/informe/automatas_appendix.pdf`. En el flujo antiguo, el
+informe completo se generaba desde Markdown y agregaba automáticamente este
+anexo con:
 
 ```bash
 python tools/build_final_report.py
 ```
 
-El entregable resultante es `docs/informe/Tarea_JefeGrupo_FernandoValdes.pdf`.
+El entregable actual es `docs/informe/Tarea_JefeGrupo_FernandoValdes.pdf`,
+compilado desde LaTeX; el script histórico `build_final_report.py` ahora
+escribe `Tarea_JefeGrupo_FernandoValdes_historico.pdf` para no pisarlo.

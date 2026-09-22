@@ -1,4 +1,10 @@
-"""Genera el informe PDF final desde el Markdown y los diagramas versionados."""
+"""Generador HISTÓRICO del informe PDF (ReportLab, versión antigua en Markdown).
+
+NO genera el informe final: el entregable canónico se compila desde
+docs/informe/Tarea_JefeGrupo_FernandoValdes.tex con latexmk. Este script se
+conserva como auxiliar y escribe un archivo *_historico.pdf para no pisar
+nunca el PDF final.
+"""
 
 from __future__ import annotations
 
@@ -35,7 +41,7 @@ from build_report_diagrams import build as build_diagrams
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT_SOURCE = ROOT / "docs" / "informe" / "informe_tecnico.md"
-DEFAULT_OUTPUT = ROOT / "docs" / "informe" / "Tarea_JefeGrupo_FernandoValdes.pdf"
+DEFAULT_OUTPUT = ROOT / "docs" / "informe" / "Tarea_JefeGrupo_FernandoValdes_historico.pdf"
 LOGO = ROOT / "docs" / "ing_civil-informatica_gris.png"
 
 BLUE = colors.HexColor("#007DB3")

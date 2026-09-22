@@ -1,5 +1,12 @@
 # Informe técnico: analizador léxico de un subconjunto de Prolog
 
+> **DOCUMENTO HISTÓRICO.** Este Markdown fue un borrador del informe y ya no está
+> sincronizado con la entrega (fecha, nombres y estructura corresponden a una versión
+> anterior). El documento canónico y único entregable es
+> `docs/informe/Tarea_JefeGrupo_FernandoValdes.tex` (PDF
+> `docs/informe/Tarea_JefeGrupo_FernandoValdes.pdf`). No editar este archivo para
+> la entrega; se conserva solo como referencia del proceso.
+
 ## 1. Portada y resumen ejecutivo
 
 | Campo       | Valor                                                                                   |
