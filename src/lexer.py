@@ -15,7 +15,9 @@ ASCII_LOWER = frozenset("abcdefghijklmnopqrstuvwxyz")
 ASCII_UPPER = frozenset("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 ASCII_DIGITS = frozenset("0123456789")
 ID_CONT = ASCII_LOWER | ASCII_UPPER | ASCII_DIGITS | {"_"}
-ATOM_CONT = ASCII_LOWER | ASCII_DIGITS | {"_"}
+# La continuación de átomo coincide con la de identificador: el enunciado
+# define átomos iniciados en minúscula continuados por letras, dígitos o _.
+ATOM_CONT = ID_CONT
 INTEGER_RE = re.compile(r"[0-9]+")
 REAL_RE = re.compile(r"[0-9]+\.[0-9]+")
 

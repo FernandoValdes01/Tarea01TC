@@ -21,7 +21,8 @@
 \usepackage{float}
 \usepackage{tikz}
 \usetikzlibrary{automata,positioning,arrows.meta}
-\usepackage{titlesec}
+\usepackage{microtype}
+\DisableLigatures{encoding=T1, family=tt*}
 \usepackage{caption}
 \usepackage{pdfpages}
 \usepackage{hyperref}
@@ -35,7 +36,7 @@
 \hypersetup{
   hidelinks,
   pdftitle={Análisis léxico del lenguaje Prolog},
-  pdfauthor={Fernando Valdés; Juan Muñoz; Vicente Rivera},
+  pdfauthor={Fernando Alonso Valdés Gómez; Juan Francisco Muñoz Veloso; Vicente Rodrigo Rivera Sánchez},
   pdfsubject={Informe de tarea - Teoría de la Computación}
 }
 
@@ -45,10 +46,10 @@
 \setlist[itemize]{leftmargin=1.5em,itemsep=0.15em,topsep=0.2em}
 \setlist[enumerate]{leftmargin=1.5em,itemsep=0.15em,topsep=0.2em}
 
-\titleformat{\section}{\normalfont\fontsize{14}{16}\bfseries\color{darkblue}}{\thesection.}{0.5em}{}
-\titleformat{\subsection}{\normalfont\fontsize{12}{14}\bfseries\color{medblue}}{\thesubsection}{0.5em}{}
-\titlespacing*{\section}{0pt}{1.2ex plus 0.3ex}{0.6ex plus 0.2ex}
-\titlespacing*{\subsection}{0pt}{1.0ex plus 0.3ex}{0.4ex plus 0.2ex}
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0pt}{-1.2ex plus -0.3ex}{0.6ex plus 0.2ex}{\normalfont\fontsize{14}{16}\bfseries\color{darkblue}}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0pt}{-1.0ex plus -0.3ex}{0.4ex plus 0.2ex}{\normalfont\fontsize{12}{14}\bfseries\color{medblue}}}
+\makeatother
 
 \captionsetup{font=small,labelfont=bf,labelsep=colon}
 
@@ -66,6 +67,7 @@
 }
 
 \newcommand{\code}[1]{{\ttfamily\small #1}}
+\newcommand{\bs}{\textbackslash}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 
 \lstdefinestyle{plaincode}{
@@ -111,7 +113,7 @@
   \hline
   \cellcolor{lightfill}\bfseries Código curso & INFO1148 \\
   \hline
-  \cellcolor{lightfill}\bfseries Integrantes & Fernando Valdés \newline Juan Muñoz \newline Vicente Rivera \\
+  \cellcolor{lightfill}\bfseries Integrantes & Fernando Alonso Valdés Gómez \newline Juan Francisco Muñoz Veloso \newline Vicente Rodrigo Rivera Sánchez \\
   \hline
   \cellcolor{lightfill}\bfseries Profesor & Prof. M. Lévano \\
   \hline
@@ -129,7 +131,7 @@
 % --------------------------------------------------------------------------
 \section*{Resumen}
 
-Este informe presenta el análisis, diseño, implementación y validación de un analizador léxico para un subconjunto de Prolog inspirado en la notación de ISO Prolog y SWI-Prolog. El trabajo define formalmente el catálogo de tokens con una expresión regular por categoría, modela las categorías principales con autómatas finitos, muestra la determinización por construcción de subconjuntos y la minimización por refinamiento de particiones sobre un subconjunto representativo, e implementa el lexer en Python con recorrido de izquierda a derecha, máxima coincidencia y prioridades explícitas. El lexer emite tipo, lexema original, línea y columna por token, administra una tabla de lexemas con deduplicación por par tipo y lexema, y reporta seis clases de error con fragmento y posición continuando el análisis. La validación usa una suite de 85 pruebas automatizadas con 26 casos válidos, 22 de prioridad, 16 inválidos y dos archivos completos, con resultado real de 85 aprobadas y cero fallos.
+Este informe presenta el análisis, diseño, implementación y validación de un analizador léxico para un subconjunto de Prolog inspirado en la notación de ISO Prolog y SWI-Prolog (ISO/IEC, 1995; SWI-Prolog, s. f.). El trabajo define formalmente el catálogo de tokens con una expresión regular por categoría, modela las categorías principales con autómatas finitos, muestra la determinización por construcción de subconjuntos y la minimización por refinamiento de particiones sobre un subconjunto representativo, e implementa el lexer en Python con recorrido de izquierda a derecha, máxima coincidencia y prioridades explícitas. El lexer emite tipo, lexema original, línea y columna por token, administra una tabla de lexemas con deduplicación por par tipo y lexema, y reporta seis clases de error con fragmento y posición continuando el análisis. La validación usa una suite de 86 pruebas automatizadas con 27 casos válidos, 22 de prioridad, 16 inválidos y dos archivos completos, con resultado real de 86 aprobadas y cero fallos.
 
 \textbf{Palabras clave:} análisis léxico, Prolog, expresiones regulares, autómatas finitos, tabla de lexemas.
 
@@ -163,48 +165,53 @@ Analizar, diseñar, implementar y validar un analizador léxico para un subconju
 % --------------------------------------------------------------------------
 \section{Alcance del analizador}
 
-El analizador reconoce exactamente el catálogo de \code{docs/informe/01\_especificacion\_lexica.md}: átomos simples y entre comillas simples, variables nombradas y anónima, enteros y reales sin signo, cadenas con comillas dobles, operadores de las seis familias (cláusula, consulta, DCG, unificación y comparación, aritméticos y control), nueve delimitadores de un carácter y elementos ignorables (espacios, tabulaciones, saltos de línea y comentarios de línea y de bloque).
+El analizador reconoce exactamente el catálogo de \code{docs/informe/01\_especificacion\_lexica.md}: átomos simples y entre comillas simples, variables nombradas y anónima, enteros y reales sin signo, cadenas con comillas dobles, operadores de las seis familias (cláusula, consulta, DCG, unificación y comparación, aritméticos y control), nueve delimitadores de un carácter y elementos ignorables (espacios, tabulaciones, saltos de línea y comentarios de línea y de bloque), según las categorías exigidas en el enunciado (Lévano, 2026).
 
 Quedan fuera del alcance el análisis sintáctico y semántico: no se verifica el orden de los tokens, no se construye un árbol sintáctico, no se comprueba el balance de paréntesis, corchetes o llaves, no se resuelven ámbitos ni variables repetidas, no se implementa unificación, no se evalúan expresiones y no se decide si una secuencia de tokens forma un programa válido. Una \code{)} aislada es un token \code{RPAREN} correcto; su posible improcedencia pertenece a una fase posterior.
 
 % --------------------------------------------------------------------------
 \section{Especificación léxica}
 
-{\small
+{\scriptsize
+\setlength{\tabcolsep}{3pt}
 \noindent
-\begin{tabularx}{\textwidth}{|l|Y|Y|Y|}
+\begin{tabularx}{\textwidth}{|l|>{\hsize=0.7\hsize}Y|>{\hsize=1.6\hsize}Y|>{\hsize=0.85\hsize}Y|>{\hsize=0.85\hsize}Y|l|}
   \hline
-  \rowcolor{darkblue}\multicolumn{1}{|c|}{\color{white}\bfseries Token} & \multicolumn{1}{c|}{\color{white}\bfseries Descripción} & \multicolumn{1}{c|}{\color{white}\bfseries Expresión regular} & \multicolumn{1}{c|}{\color{white}\bfseries Ejemplos válidos} \\
+  \rowcolor{darkblue}\multicolumn{1}{|c|}{\color{white}\bfseries Token} & \multicolumn{1}{c|}{\color{white}\bfseries Descripción} & \multicolumn{1}{c|}{\color{white}\bfseries Expresión regular} & \multicolumn{1}{c|}{\color{white}\bfseries Ejemplos válidos} & \multicolumn{1}{c|}{\color{white}\bfseries Ejemplos inválidos} & \multicolumn{1}{c|}{\color{white}\bfseries Atributo} \\
   \hline
-  \code{ATOM} & Átomo iniciado por minúscula ASCII, seguido de minúsculas, dígitos o guion bajo. & \code{[a-z][a-z0-9\_]*} & \code{padre}, \code{persona\_1}, \code{isla} \\
+  \code{ATOM} & Minúscula inicial; continúa con letras, dígitos o guion bajo. & \code{[a-z]\allowbreak[A-Za-z0-9\_]*} & \code{padre}, \code{persona\_1}, \code{personaX} & \code{Padre}, \code{átomo} & índice $i$ \\
   \hline
-  \code{QUOTED\_ATOM} & Átomo entre comillas simples, con escapes válidos y sin salto real. & \code{'...' con escapes} & \code{'Juan Perez'}, \code{':-'}, \code{'it\textbackslash's'} \\
+  \code{QUOTED\_ATOM} & Comillas simples, escapes válidos, sin salto real. & \code{'(\bs\bs['\bs nrt]|\allowbreak[\^'\bs\bs\bs n\bs r])*'} & \code{'Juan Perez'}, \code{':-'}, \code{'it\bs's'} & \code{'sin cierre}, \code{'a\bs q'} & índice $i$ \\
   \hline
-  \code{VARIABLE} & Mayúscula inicial o guion bajo seguido de al menos un carácter identificador. & \code{[A-Z]... | \_...} & \code{X}, \code{Persona}, \code{\_Tmp} \\
+  \code{VARIABLE} & Mayúscula o guion bajo más continuación. & \code{[A-Z][A-Za-z0-9\_]*|\allowbreak\_[A-Za-z0-9\_]+} & \code{X}, \code{Persona}, \code{\_Tmp} & \code{9X}, \code{\_} (es anónima) & índice $i$ \\
   \hline
-  \code{ANONYMOUS\_VARIABLE} & Guion bajo aislado, sin continuación. & \code{\_} & \code{\_} \\
+  \code{ANONYMOUS\_VARIABLE} & Guion bajo aislado, con guarda de no-continuación. & \code{\_(?![A-Za-z0-9\_])} & \code{\_} & \code{\_X}, \code{\_\_} (son variables) & — \\
   \hline
-  \code{INTEGER} & Dígitos ASCII sin signo. & \code{[0-9]+} & \code{0}, \code{25}, \code{0007} \\
+  \code{INTEGER} & Dígitos ASCII sin signo. & \code{[0-9]+} & \code{0}, \code{25}, \code{0007} & \code{-25}, \code{5.}, \code{12abc} & índice $i$ \\
   \hline
-  \code{REAL} & Dígitos, punto y dígitos obligatorios a ambos lados. & \code{[0-9]+\textbackslash.[0-9]+} & \code{3.14}, \code{0.5}, \code{10.00} \\
+  \code{REAL} & Dígitos, punto y dígitos a ambos lados. & \code{[0-9]+\bs.[0-9]+} & \code{3.14}, \code{0.5}, \code{10.00} & \code{.5}, \code{5.}, \code{1e3} & índice $i$ \\
   \hline
-  \code{STRING} & Literal entre comillas dobles, con escapes válidos y sin salto real. & \code{"..." con escapes} & \code{"hola"}, \code{"dice"} \\
+  \code{STRING} & Comillas dobles, escapes válidos, sin salto real. & \code{\bs"(\bs\bs["\bs nrt]|\allowbreak[\^"\bs\bs\bs n\bs r])*\bs"} & \code{"hola"}, \code{"dice"} & \code{"sin cierre}, \code{"a\bs q"} & índice $i$ \\
   \hline
-  \code{OPERATOR} & Operador exacto de seis familias, por longitud descendente. & unión normativa (secc. 6) & \code{:-}, \code{?-}, \code{-->}, \code{=..}, \code{//}, \code{mod} \\
+  \code{OPERATOR} & Operador exacto; se prueba por longitud descendente. & \code{-->|\allowbreak\bs==|\allowbreak=..|\allowbreak==|\allowbreak\bs=|\allowbreak=<|\allowbreak>=|\allowbreak:-|\allowbreak?-|\allowbreak//|\allowbreak\bs*\bs*|\allowbreak=|\allowbreak<|\allowbreak>|\allowbreak/|\allowbreak\bs*|\allowbreak\bs+|\allowbreak-|\allowbreak\bs+|\allowbreak!|\allowbreak;|\allowbreak is|\allowbreak mod} & \code{:-}, \code{?-}, \code{-->}, \code{=..}, \code{//}, \code{mod} & \code{:}, \code{?}, \code{\bs} (sola) & familia \\
   \hline
-  Delimitadores & Nueve símbolos de un carácter, sin validación de balance. & un símbolo & \code{( ) [ ] \{ \} | , .} \\
+  Delimitadores & Nueve símbolos de un carácter, un token cada uno. & \code{\bs(|\allowbreak\bs)|\allowbreak\bs[|\allowbreak\bs]|\allowbreak\bs\{|\allowbreak\bs\}|\allowbreak\bs||\allowbreak,|\allowbreak\bs.} & \code{( ) [ ] \{ \} | , .} & \code{@} (no es delimitador) & — \\
+  \hline
+  \code{COMMENT} & Línea \code{\%} o bloque \code{/* ... */}; se ignora. & \code{\%[\^\bs r\bs n]*}, \code{/\bs*(?:[\^*]|\allowbreak\bs*(?!/))*\bs*/} & \code{\% Hechos}, \code{/* ... */} & \code{/* sin cierre} & — \\
+  \hline
+  \code{WHITESPACE} & Espacios, tabulaciones y saltos; se ignora. & \code{[ \bs t\bs r\bs n]+} & espacio, tab, salto & \code{\bs v} (no admitido) & — \\
   \hline
 \end{tabularx}
 }
 
-Las familias de \code{OPERATOR} son cláusula (\code{:-}), consulta (\code{?-}), DCG (\code{-->}), unificación y comparación (\code{=}, \code{\textbackslash=}, \code{==}, \code{\textbackslash==}, \code{=..}, \code{<}, \code{=<}, \code{>}, \code{>=}), aritméticos (\code{+}, \code{-}, \code{*}, \code{/}, \code{//}, \code{**}, \code{is}, \code{mod}) y control (\code{\textbackslash+}, \code{!}, \code{;}). Las palabras \code{is} y \code{mod} se reconocen solo cuando el lexema completo no tiene continuación de identificador.
+Las familias de \code{OPERATOR} son cláusula (\code{:-}), consulta (\code{?-}), DCG (\code{-->}), unificación y comparación (\code{=}, \code{\textbackslash=}, \code{==}, \code{\textbackslash==}, \code{=..}, \code{<}, \code{=<}, \code{>}, \code{>=}), aritméticos (\code{+}, \code{-}, \code{*}, \code{/}, \code{//}, \code{**}, \code{is}, \code{mod}) y control (\code{\textbackslash+}, \code{!}, \code{;}). Las palabras \code{is} y \code{mod} se reconocen solo cuando el lexema completo no tiene continuación de identificador, es decir, con la guarda de frontera \code{(?![A-Za-z0-9\_])}; así, \code{isla} y \code{modulo} son átomos completos.
 
-Los números no tienen signo; \code{-12} son dos tokens. \code{INTEGER} y \code{REAL} no admiten exponentes ni puntos sin dígitos a ambos lados. Los escapes válidos son la barra con el delimitador, más \code{\textbackslash n}, \code{\textbackslash r} y \code{\textbackslash t}. Ningún literal admite un salto de línea real. El signo \code{\%} inicia un comentario de línea hasta antes del salto y \code{/*} abre un bloque que termina en el primer \code{*/} sin anidamiento. Las posiciones son 1-based; la tabulación avanza una columna y \code{CRLF} cuenta como un único salto. El lexema conservado es siempre el segmento original, sin normalización ni conversión.
+Los números no tienen signo; \code{-12} son dos tokens. \code{INTEGER} y \code{REAL} no admiten exponentes ni puntos sin dígitos a ambos lados. Los escapes válidos son la barra con el delimitador, más \code{\textbackslash n}, \code{\textbackslash r} y \code{\textbackslash t}. Ningún literal admite un salto de línea real. El signo \code{\%} inicia un comentario de línea hasta antes del salto y \code{/*} abre un bloque que termina en el primer \code{*/} sin anidamiento. Las posiciones son 1-based; la tabulación avanza una columna y \code{CRLF} cuenta como un único salto. El lexema conservado es siempre el segmento original, sin normalización ni conversión. Las expresiones regulares de la tabla son las efectivas que acepta el programa y coinciden con la especificación contractual de \code{docs/informe/01\_especificacion\_lexica.md} (Equipo de trabajo, 2026). Las filas \code{COMMENT} y \code{WHITESPACE} documentan elementos que se reconocen y se ignoran: actualizan la posición (\code{CRLF} cuenta como un único salto) sin emitir token ni entrada de tabla.
 
 % --------------------------------------------------------------------------
 \section{Diseño de los autómatas}
 
-Las figuras usan la convención estado --símbolo--> estado; el doble círculo indica aceptación y el rótulo inferior el token emitido. Los alfabetos abreviados son \code{LOWER=[a-z]}, \code{UPPER=[A-Z]}, \code{DIGIT=[0-9]} e \code{ID=[A-Za-z0-9\_]}.
+Las figuras usan la convención \code{estado --símbolo--> estado}; el doble círculo indica aceptación y el rótulo inferior el token emitido. Los alfabetos abreviados son \code{LOWER=[a-z]}, \code{LETTER=[A-Za-z]}, \code{UPPER=[A-Z]}, \code{DIGIT=[0-9]} e \code{ID=[A-Za-z0-9\_]}.
 
 \begin{figure}[H]
   \centering
@@ -213,7 +220,7 @@ Las figuras usan la convención estado --símbolo--> estado; el doble círculo i
     \node[acept, right of=a0] (a1) {$a1$};
     \node[breve, below of=a1, yshift=-0.5cm, fill=gray!15] (sink) {SINK};
     \draw[flecha] (a0) -- node[above]{\code{LOWER}} (a1);
-    \draw[flecha] (a1) to[loop above] node[above]{\code{LOWER, DIGIT, \_}} (a1);
+    \draw[flecha] (a1) to[loop above] node[above]{\code{LETTER, DIGIT, \_}} (a1);
     \draw[flecha, dashed] (a0) -- node[left]{otro} (sink);
     \draw[flecha, dashed] (a1) -- node[right]{otro} (sink);
     \node[below=0.2cm of a1, xshift=0.85cm]{\code{ATOM}};
@@ -221,7 +228,7 @@ Las figuras usan la convención estado --símbolo--> estado; el doble círculo i
   \caption{Autómata para átomos no entrecomillados.}
 \end{figure}
 
-El AFD de átomos reconoce \texttt{LOWER (LOWER U DIGIT U \{\_\})*} con máxima coincidencia: \texttt{q0 --LOWER--> q1} y \texttt{q1 --[a-z0-9\_]--> q1}, donde \texttt{q1} acepta \texttt{ATOM}.
+El AFD de átomos reconoce \texttt{LOWER (LETTER U DIGIT U \{\_\})*} con máxima coincidencia: \texttt{q0 --LOWER--> q1} y \texttt{q1 --[A-Za-z0-9\_]--> q1}, donde \texttt{q1} acepta \texttt{ATOM}.
 
 \begin{figure}[H]
   \centering
@@ -268,19 +275,19 @@ Los literales entrecomillados siguen el esquema \texttt{D ... D} con estado de e
 
 \begin{figure}[H]
   \centering
-  \begin{tikzpicture}[node distance=2.7cm]
+  \begin{tikzpicture}
     \node[breve, initial] (l0) at (0,0) {$l0$};
-    \node[breve] (lb) at (2.7,0) {$lB$};
-    \node[breve] (le) at (4.0,1.8) {$lE$};
-    \node[acept] (lf) at (5.6,0) {$lF$};
-    \node[breve, fill=gray!15] (lerr) at (2.7,-2.6) {ERR};
+    \node[breve] (lb) at (3.0,0) {$lB$};
+    \node[breve] (le) at (6.2,2.8) {$lE$};
+    \node[acept] (lf) at (8.8,0) {$lF$};
+    \node[breve, fill=gray!15] (lerr) at (6.2,-2.6) {ERR};
     \draw[flecha] (l0) -- node[above]{\code{D}} (lb);
     \draw[flecha] (lb) to[loop below] node[below]{\code{excepto D, \textbackslash, salto}} (lb);
     \draw[flecha] (lb) -- node[above]{\code{D}} (lf);
-    \draw[flecha] (lb) -- node[above left]{\code{\textbackslash}} (le);
-    \draw[flecha] (le) -- node[above right]{escape válido} (lb);
-    \draw[flecha, dashed] (le) -- node[right]{otro} (lerr);
-    \node[below=0.25cm of lf, align=center]{\code{QUOTED\_ATOM /} \\ \code{STRING}};
+    \draw[flecha] (lb) -- node[pos=0.2, above]{\code{\textbackslash}} (le);
+    \draw[flecha] (le) -- node[pos=0.5, below]{escape válido} (lb);
+    \draw[flecha, dashed] (le) to[bend left=12] node[right]{otro} (lerr);
+    \node[below=0.3cm of lf, align=center]{\code{QUOTED\_ATOM /} \\ \code{STRING}};
   \end{tikzpicture}
   \caption{Autómata para literales entrecomillados (átomos citados y cadenas).}
 \end{figure}
@@ -289,29 +296,29 @@ Los comentarios separan la rama de línea (\texttt{\%} hasta el salto, que acept
 
 \begin{figure}[H]
   \centering
-  \begin{tikzpicture}[node distance=2.4cm]
+  \begin{tikzpicture}
     \node[breve, initial] (c0) at (0,0) {$c0$};
-    \node[acept] (cl) at (2.8,1.6) {$cL$};
-    \node[breve] (cs) at (2.8,-1.2) {$c/$};
-    \node[breve] (cb) at (5.4,-1.2) {$cB$};
-    \node[breve] (ct) at (8.0,-1.2) {$c*$};
-    \node[acept] (cf) at (10.6,-1.2) {$cF$};
+    \node[acept] (cl) at (3.2,2.2) {$cL$};
+    \node[breve] (cs) at (3.0,-1.4) {$c/$};
+    \node[breve] (cb) at (5.8,-1.4) {$cB$};
+    \node[breve] (ct) at (8.6,-1.4) {$c*$};
+    \node[acept] (cf) at (11.2,-1.4) {$cF$};
     \draw[flecha] (c0) -- node[above left]{\code{\%}} (cl);
     \draw[flecha] (cl) to[loop above] node[above]{excepto salto} (cl);
     \draw[flecha] (c0) -- node[below left]{\code{/}} (cs);
     \draw[flecha] (cs) -- node[above]{\code{*}} (cb);
     \draw[flecha] (cb) to[loop above] node[above]{excepto \code{*}} (cb);
     \draw[flecha] (cb) -- node[above]{\code{*}} (ct);
-    \draw[flecha] (ct) to[loop below] node[below]{\code{*}} (ct);
-    \draw[flecha] (ct.south) to[bend right=55] node[below, yshift=-3pt]{otro} (cb.south);
+    \draw[flecha] (ct) to[loop above] node[above]{\code{*}} (ct);
+    \draw[flecha] (ct.south) to[out=240, in=300, looseness=1.25] node[below, yshift=-2pt]{otro} (cb.south);
     \draw[flecha] (ct) -- node[above]{\code{/}} (cf);
-    \node[above=0.2cm of cl]{\code{LÍNEA}};
-    \node[below=0.25cm of cf]{\code{BLOQUE}};
+    \node[right=0.15cm of cl]{\code{LÍNEA}};
+    \node[below=0.3cm of cf]{\code{BLOQUE}};
   \end{tikzpicture}
   \caption{Autómata para comentarios de línea y de bloque.}
 \end{figure}
 
-Los operadores se organizan en un trie que comparte prefijos para aplicar máxima coincidencia antes de emitir el token: cada camino desde \texttt{o0} deletrea el lexema y solo los nodos de doble círculo aceptan, conservando lexema y familia. Los operadores de un carácter (\texttt{, ; ! + - * / < = >}) aceptan directamente desde \texttt{o0}; las palabras \texttt{is} y \texttt{mod} requieren además la guarda de frontera de palabra.
+El trie representativo de operadores comparte prefijos para aplicar máxima coincidencia antes de emitir el token: cada camino desde \texttt{o0} deletrea el lexema y solo los nodos de doble círculo aceptan, conservando lexema y familia. Por legibilidad se omiten las ramas directas de un carácter (\texttt{;} \texttt{!} \texttt{+} \texttt{<}), que aceptan directamente desde \texttt{o0} igual que las dibujadas; la coma no es un operador sino el delimitador \texttt{COMMA}. Las palabras \texttt{is} y \texttt{mod} requieren además la guarda de frontera de palabra.
 
 \begin{figure}[H]
   \centering
@@ -337,7 +344,7 @@ Los operadores se organizan en un trie que comparte prefijos para aplicar máxim
     \node[tria] (dge) at (4.9,-2.6) {$>=$};
     \node[tria] (dne) at (4.9,-3.5) {$\backslash=$};
     \node[tria] (dnp) at (4.9,-4.4) {$\backslash+$};
-    \node[tria] (tdcg) at (7.5,2.8) {$-->$};
+    \node[tria] (tdcg) at (7.5,2.8) {\texttt{-->}};
     \node[tria] (tuni) at (7.5,-0.8) {$=..$};
     \node[tria] (tnee) at (7.5,-3.5) {$\backslash==$};
     \draw[flecha] (o0) -- (ccl);
@@ -363,7 +370,7 @@ Los operadores se organizan en un trie que comparte prefijos para aplicar máxim
     \draw[flecha] (ded) -- (tuni);
     \draw[flecha] (dne) -- (tnee);
   \end{tikzpicture}
-  \caption{Trie de operadores: prefijos compartidos y aceptación por máxima coincidencia.}
+  \caption{Trie representativo de operadores con prefijos compartidos.}
 \end{figure}
 
 El despachador integrado decide por la primera clase de carácter y luego aplica máxima coincidencia y prioridad, lo que equivale a unir los autómatas por transiciones epsilon, determinizar y etiquetar cada aceptación.
@@ -509,7 +516,7 @@ Las palabras \code{is} y \code{mod} solo ganan cuando no tienen continuación de
 
 \subsection{Arquitectura de la solución}
 
-La arquitectura tiene cinco módulos con una sola dirección de dependencias: \code{tokens.py} define \code{TokenType}, \code{OperatorFamily}, el mapa único de operadores y el objeto \code{Token}; \code{errors.py} define el tipo de error y el diagnóstico; \code{symbol\_table.py} implementa la tabla con deduplicación por par tipo y lexema; \code{lexer.py} expone el lexer y las funciones de lectura; y \code{main.py} ofrece la CLI.
+La arquitectura tiene cinco módulos con una sola dirección de dependencias: \code{tokens.py} define \code{TokenType}, \code{OperatorFamily}, el mapa único de operadores y el objeto \code{Token}; \code{errors.py} define el tipo de error y el diagnóstico; \code{symbol\_table.py} implementa la tabla con deduplicación por par tipo y lexema; \code{lexer.py} expone el lexer y las funciones de lectura; y \code{main.py} ofrece la CLI. La validación numérica usa coincidencia completa sobre el fragmento candidato (Python Software Foundation, 2026).
 
 El flujo recorre la entrada de izquierda a derecha con un cursor de índice, línea y columna: primero consume ignorables, luego literales, números, identificadores, operadores por longitud descendente, delimitadores y finalmente el carácter inválido. Cada token guarda la línea y columna de su primer carácter; la tabulación avanza una columna y \code{CRLF} cuenta como un único salto.
 
@@ -544,6 +551,32 @@ python -m src.main tests/corpus/entradas/programa_con_errores.pl
 
 Se registran \code{ATOM}, \code{QUOTED\_ATOM} y \code{VARIABLE} como identificadores, más \code{INTEGER}, \code{REAL} y \code{STRING} como literales conservables, siempre con el lexema original y sin conversiones. La clave de deduplicación es el par tipo y lexema. La variable anónima \code{\_} nunca se registra porque cada aparición es independiente; operadores, delimitadores, espacios y comentarios tampoco.
 
+Por ejemplo, para la entrada de dos líneas \code{padre(juan, ana).} repetidas, la salida con \code{--show-attributes} agrega el índice de tabla a cada token conservable:
+
+\begin{lstlisting}
+<ATOM, 'padre', 1, 1, 0>
+<ATOM, 'juan', 1, 7, 1>
+<ATOM, 'padre', 2, 1, 0>
+<ATOM, 'juan', 2, 7, 1>
+\end{lstlisting}
+
+y la opción \code{--tabla} vuelca las entradas deduplicadas:
+
+\noindent
+\begin{tabularx}{\textwidth}{|l|l|Y|}
+  \hline
+  \rowcolor{darkblue}\multicolumn{1}{|c|}{\color{white}\bfseries Índice} & \multicolumn{1}{c|}{\color{white}\bfseries Tipo} & \multicolumn{1}{c|}{\color{white}\bfseries Lexema} \\
+  \hline
+  0 & \code{ATOM} & \code{padre} \\
+  \hline
+  1 & \code{ATOM} & \code{juan} \\
+  \hline
+  2 & \code{ATOM} & \code{ana} \\
+  \hline
+\end{tabularx}
+
+El token \code{padre} de la línea 2 reutiliza la entrada 0: dos tokens apuntan a la misma entrada y no se crea un duplicado.
+
 % --------------------------------------------------------------------------
 \section{Tratamiento de errores léxicos}
 
@@ -570,6 +603,8 @@ Se registran \code{ATOM}, \code{QUOTED\_ATOM} y \code{VARIABLE} como identificad
 
 Los seis errores se acumulan sin detener el recorrido y cada diagnóstico incluye clase, fragmento, línea, columna y mensaje útil. Un escape desconocido registra el error, consume la pareja y continúa buscando el cierre. La salida real del archivo con errores contiene exactamente 12 diagnósticos, con tokens válidos después de cada error recuperable y ningún token después del bloque sin cierre final.
 
+El caso \code{5.} ilustra la prioridad del reconocedor numérico: el analizador consume primero la corrida máxima de dígitos y puntos y solo después decide; si la corrida no es \code{INTEGER} ni \code{REAL} se emite \code{MALFORMED\_NUMBER} sin tokens parciales, en lugar de \code{INTEGER(5)} seguido de \code{DOT}. Esta prioridad del detector de error por sobre el tokenizado normal es una convención documentada del contrato: evita partir flotantes (\code{3.14} nunca se divide), hace el diagnóstico determinista y obliga a separar con espacio el punto final tras un número (\code{5 .}). La máxima coincidencia sigue rigiendo entre tokens válidos; el reconocedor de error solo prevalece cuando ningún token válido cubre la corrida completa.
+
 % --------------------------------------------------------------------------
 \section{Plan de pruebas y resultados}
 
@@ -594,11 +629,11 @@ Los seis errores se acumulan sin detener el recorrido y cada diagnóstico incluy
 \end{tabularx}
 }
 
-La suite \code{tests/test\_lexer.py} suma 85 pruebas: 3 del modelo \code{Token}, 26 válidas \code{V01-V26}, 22 de prioridad \code{P01-P22}, 16 inválidas \code{I01-I16}, 12 transversales \code{T01-T12} y 6 de archivos \code{F01-F06}. La matriz completa queda disponible en \code{docs/informe/04\_matriz\_de\_pruebas.md} y el corpus en \code{tests/corpus/}.
+La suite \code{tests/test\_lexer.py} suma 86 pruebas: 3 del modelo \code{Token}, 27 válidas \code{V01-V27}, 22 de prioridad \code{P01-P22}, 16 inválidas \code{I01-I16}, 12 transversales \code{T01-T12} y 6 de archivos \code{F01-F06}. La matriz completa queda disponible en \code{docs/informe/04\_matriz\_de\_pruebas.md} y el corpus en \code{tests/corpus/}.
 
 \subsection{Análisis de resultados}
 
-El archivo válido produce 207 tokens, 0 errores y 48 entradas, cubriendo los 17 tipos de token y las 6 familias. El archivo con errores produce 69 tokens, 12 errores de las 6 clases en 12 líneas distintas y 28 entradas, con tokens válidos después de cada error recuperable y ningún token después del bloque sin cierre final. El comando ejecutado fue \lstinline|uv run --with pytest python -m pytest -q|, con resultado real de 85 aprobadas; además \code{python -m compileall src tests} terminó sin errores y \lstinline|git diff --check| salió limpio.
+El archivo válido produce 207 tokens, 0 errores y 48 entradas, cubriendo los 17 tipos de token y las 6 familias. El archivo con errores produce 69 tokens, 12 errores de las 6 clases en 12 líneas distintas y 28 entradas, con tokens válidos después de cada error recuperable y ningún token después del bloque sin cierre final. El comando ejecutado fue \lstinline|uv run --with pytest python -m pytest -q|, con resultado real de 86 aprobadas (pytest-dev team, 2026); además \code{python -m compileall src tests} terminó sin errores y \lstinline|git diff --check| salió limpio.
 
 La cobertura incluye cierres a EOF y antes de salto, escapes en ambos delimitadores, cinco formas numéricas mal formadas, caracteres aislados, \code{CRLF}, tabulación, comentarios dentro de literales, \code{-12} como dos tokens y \code{)} aislado como token. La dificultad principal fue distinguir el punto de fin de cláusula del punto decimal: una cláusula que termina en número sin espacio (\code{mod 5.}) es número mal formado, por lo que los archivos válidos separan el número del punto final.
 
@@ -607,7 +642,7 @@ La cobertura incluye cierres a EOF y antes de salto, escapes en ambos delimitado
 
 El trabajo muestra que un lexer riguroso nace de decisiones contractuales explícitas antes que del código: alfabeto ASCII, números sin signo, escapes cerrados por delimitador, comentarios no anidables y máxima coincidencia con prioridades resolvieron las ambigüedades sin casos especiales en la implementación.
 
-Los objetivos se cumplieron de forma medible con 85 pruebas aprobadas, cobertura total de categorías y familias, y dos archivos completos que ejercitan el recorrido real. La separación entre especificación, implementación y validación permite rastrear cada regla desde su expresión regular hasta su prueba.
+Los objetivos se cumplieron de forma medible con 86 pruebas aprobadas, cobertura total de categorías y familias, y dos archivos completos que ejercitan el recorrido real. La separación entre especificación, implementación y validación permite rastrear cada regla desde su expresión regular hasta su prueba.
 
 Las limitaciones son que el lexer solo reconoce el subconjunto contratado y que los archivos válidos deben separar con espacio un número del punto final por la regla de número mal formado. Como mejoras futuras se proponen modos de salida adicionales, un visualizador de autómatas generado desde las expresiones del código y pruebas de rendimiento sobre archivos grandes, sin ampliar el subconjunto ni entrar en análisis sintáctico.
 
@@ -620,6 +655,7 @@ Las limitaciones son que el lexer solo reconoce el subconjunto contratado y que 
   \item Python Software Foundation. (2026). \textit{Regular expression operations (re)}. https://docs.python.org/3/library/re.html
   \item pytest-dev team. (2026). \textit{pytest documentation}. https://docs.pytest.org/
   \item Astral Software. (2026). \textit{uv documentation}. https://docs.astral.sh/uv/
+  \item SWI-Prolog. (s. f.). \textit{SWI-Prolog documentation}. https://www.swi-prolog.org/
   \item Equipo de la asignatura INFO1148. (2026). \textit{Formato Informe Tarea}. Documento consultado en \code{docs/referencias/\allowbreak Formato Informe Tarea.pdf}.
   \item Equipo de trabajo. (2026). \textit{Especificación léxica contractual, matriz de pruebas y código del analizador}. Repositorio https://github.com/FernandoValdes01/Tarea01TC.
 \end{itemize}
@@ -638,7 +674,7 @@ Las limitaciones son que el lexer solo reconoce el subconjunto contratado y que 
 
 \subsection{Anexo A. Evidencias adicionales}
 
-El contenido canónico del informe está en \code{docs/informe/Fernandovaldestareaspark.tex}; los nombres, fecha, autoría y resultados corresponden al trabajo de Fernando Valdés, Juan Muñoz y Vicente Rivera. La especificación contractual vive en \code{docs/informe/01\_especificacion\_lexica.md} y la matriz completa en \code{docs/informe/04\_matriz\_de\_pruebas.md}. El código está en \code{src/} y el corpus en \code{tests/corpus/}.
+El contenido canónico del informe está en \code{docs/informe/Tarea\_JefeGrupo\_FernandoValdes.tex}; los nombres, fecha, autoría y resultados corresponden al trabajo de Fernando Alonso Valdés Gómez, Juan Francisco Muñoz Veloso y Vicente Rodrigo Rivera Sánchez. La especificación contractual vive en \code{docs/informe/01\_especificacion\_lexica.md} y la matriz completa en \code{docs/informe/04\_matriz\_de\_pruebas.md}. El código está en \code{src/} y el corpus en \code{tests/corpus/}.
 
 Comandos ejecutados desde la raíz del repositorio:
 
@@ -651,7 +687,7 @@ python tools/build_report_diagrams.py
 git diff --check
 \end{lstlisting}
 
-Resultados reales: \code{compileall} sin errores, 85 pruebas aprobadas, PDF generado correctamente y \lstinline|git diff --check| limpio. El archivo válido produce 207 tokens, 0 errores y 48 entradas; el archivo con errores produce 69 tokens, 12 errores y 28 entradas. Frente a la rúbrica: especificación y expresiones regulares en la sección 4, autómatas con AFN, subconjuntos y minimización en la sección 5, implementación con posiciones y tabla en la sección 7, y pruebas con errores léxicos en las secciones 8 y 9.
+Resultados reales: \code{compileall} sin errores, 86 pruebas aprobadas, PDF generado correctamente y \lstinline|git diff --check| limpio. El archivo válido produce 207 tokens, 0 errores y 48 entradas; el archivo con errores produce 69 tokens, 12 errores y 28 entradas. Frente a la rúbrica: especificación y expresiones regulares en la sección 4, autómatas con AFN, subconjuntos y minimización en la sección 5, implementación con posiciones y tabla en la sección 7, y pruebas con errores léxicos en las secciones 8 y 9.
 
 Las nueve figuras vectoriales del anexo se incorporan a continuación desde \code{automatas\_appendix.pdf}, generadas con \code{build\_report\_diagrams.py} a partir de las fuentes de \code{docs/automatas/diagramas/}.
 

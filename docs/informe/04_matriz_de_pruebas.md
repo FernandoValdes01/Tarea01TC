@@ -2,14 +2,14 @@
 
 Contrato: `docs/informe/01_especificacion_lexica.md`.
 Suite: `tests/test_lexer.py` + corpus en `tests/corpus/`.
-Resultado real obtenido con `uv run --with pytest python -m pytest -q`: `85 passed` (sin fallos).
+Resultado real obtenido con `uv run --with pytest python -m pytest -q`: `86 passed` (sin fallos).
 Verificación adicional: `python3 -m compileall src tests` sin errores y `git diff --check` limpio.
 
 Nota sobre `12abc`: el contrato exige consumir la secuencia como un solo `MALFORMED_NUMBER`. La sección 8 de la especificación incorpora esta recuperación para sufijos de identificador y `P21` la verifica. El mínimo de 8 inválidas también se cumple con `I01`–`I16`.
 
 Nota sobre `5.` a fin de cláusula: `mod 5.` es `MALFORMED_NUMBER` según el contrato (sección 7.1). Los archivos válidos usan `5 .` con espacio para separar `INTEGER` y `DOT`.
 
-## Válidos (26 casos, mínimo exigido 20)
+## Válidos (27 casos, mínimo exigido 20)
 
 | ID  | Archivo o entrada           | Objetivo                          | Resultado esperado                         | Prueba asociada           | Resultado obtenido real   | Estado |
 | --- | --------------------------- | --------------------------------- | ------------------------------------------ | ------------------------- | ------------------------- | ------ |
@@ -39,6 +39,7 @@ Nota sobre `5.` a fin de cláusula: `mod 5.` es `MALFORMED_NUMBER` según el con
 | V24 | `"dice \"si\""`             | string con `\"`                   | `STRING` 1:1                               | `test_corpus_valido[V24]` | 1 token como lo esperado  | OK     |
 | V25 | `'it\'s'`                   | átomo con `\'`                    | `QUOTED_ATOM` 1:1                          | `test_corpus_valido[V25]` | 1 token como lo esperado  | OK     |
 | V26 | `[X, Y \| Z]`               | lista con barra y coma            | 7 tokens con posiciones                    | `test_corpus_valido[V26]` | 7 tokens como lo esperado | OK     |
+| V27 | `personaX`                  | átomo con mayúsculas interiores   | `ATOM('personaX')` 1:1, sin errores        | `test_corpus_valido[V27]` | 1 token como lo esperado  | OK     |
 
 ## Prioridad y máxima coincidencia
 
@@ -121,7 +122,7 @@ git diff --check
 Salida real:
 
 ```text
-85 passed
+86 passed
 ```
 
 `compileall` lista los archivos sin errores y `git diff --check` sale con código 0.

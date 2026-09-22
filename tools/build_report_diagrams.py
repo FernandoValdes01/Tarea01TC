@@ -209,9 +209,9 @@ def legend(c: Canvas, items: list[tuple[str, str]], x: float = 45, y: float = 48
 
 
 def diagram_1(c: Canvas) -> None:
-    page_header(c, 1, "AFD para átomos no entrecomillados", "Reconoce LOWER (LOWER U DIGIT U {_})* mediante máxima coincidencia.")
+    page_header(c, 1, "AFD para átomos no entrecomillados", "Reconoce LOWER (LETTER U DIGIT U {_})* mediante máxima coincidencia.")
     a0 = Node("a0", 205, 300); a1 = Node("a1", 420, 300, "ATOM", True); dead = Node("SINK", 635, 180, sink=True)
-    start_arrow(c, a0); transition(c, a0, a1, "LOWER"); loop(c, a1, "LOWER U DIGIT U {_}")
+    start_arrow(c, a0); transition(c, a0, a1, "LOWER"); loop(c, a1, "LETTER U DIGIT U {_}")
     transition(c, a0, dead, "otro", label_offset=-12, dashed=True); transition(c, a1, dead, "otro", label_offset=12, dashed=True); loop(c, dead, "SIGMA", above=False)
     for n in (a0, a1, dead): state(c, n)
     legend(c, [("aceptación", "Estado aceptor y token emitido"), ("sumidero", "Estado sumidero")]); footer(c)

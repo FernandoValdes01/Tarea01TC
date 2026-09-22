@@ -16,8 +16,8 @@ ayudan a describir diagnósticos. No son aceptores.
 
 ## 2. Átomos no entrecomillados
 
-La expresión contractual es `LOWER (LOWER ∪ DIGIT ∪ {_})*`, equivalente
-a `[a-z][a-z0-9_]*`.
+La expresión contractual es `LOWER (LETTER ∪ DIGIT ∪ {_})*`, equivalente
+a `[a-z][A-Za-z0-9_]*`.
 
 El AFD es `M_A = (Q_A, Σ_A, δ_A, a0, F_A)`:
 
@@ -25,7 +25,7 @@ El AFD es `M_A = (Q_A, Σ_A, δ_A, a0, F_A)`:
 - `Σ_A` es el alfabeto de entrada;
 - `a0` es el estado inicial;
 - `F_A = {a1}`, etiquetado `ATOM`;
-- `C_A = LOWER ∪ DIGIT ∪ {_}`.
+- `C_A = LETTER ∪ DIGIT ∪ {_}`.
 
 | Estado | `LOWER` | `DIGIT` o `_` | otro símbolo | Aceptación |
 |---|---|---|---|---|
@@ -46,7 +46,7 @@ stateDiagram-v2
     a0 --> dead: otro
     state "a1 / ATOM" as a1
     state "∅" as dead
-    a1 --> a1: LOWER ∪ DIGIT ∪ {_}
+    a1 --> a1: LETTER ∪ DIGIT ∪ {_}
     a1 --> dead: otro
     dead --> dead: Σ
 ```

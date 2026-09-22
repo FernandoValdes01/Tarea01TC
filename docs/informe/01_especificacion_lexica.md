@@ -36,7 +36,7 @@ deja abierta la política de signos y de escapes, y el presente contrato la fija
 | Nº | Decisión | Consecuencia observable |
 |---:|---|---|
 | 1 | El alfabeto de identificadores es ASCII: `A-Z`, `a-z`, `0-9` y `_`. | Una letra, dígito o espacio Unicode fuera de un literal es un carácter no admitido; no extiende una palabra ASCII. |
-| 2 | Un átomo no entrecomillado es `[a-z][a-z0-9_]*`. | Comienza siempre con minúscula ASCII. |
+| 2 | Un átomo no entrecomillado es `[a-z][A-Za-z0-9_]*`. | Comienza siempre con minúscula ASCII y continúa con letras, dígitos o guion bajo. |
 | 3 | Una variable es `[A-Z][A-Za-z0-9_]*` o `_[A-Za-z0-9_]+`. | `_` requiere tratamiento separado como variable anónima. |
 | 4 | `_` aislado es `ANONYMOUS_VARIABLE`. | Se conserva en el token, pero nunca se registra como identificador reutilizable. |
 | 5 | Los números no tienen signo. | `-12` produce `OPERATOR('-')` seguido de `INTEGER('12')`; `+` y `-` nunca forman parte del número. |
@@ -87,7 +87,7 @@ no se fusionan.
 
 | Token exacto | Descripción exclusivamente léxica | Expresión matemática | Python `re` compatible | Ejemplos válidos | Inválidos o exclusiones | Atributo asociado | Tabla de lexemas |
 |---|---|---|---|---|---|---|---|
-| `ATOM` | Palabra no entrecomillada iniciada por minúscula ASCII. | `LOWER (LOWER ∪ DIGIT ∪ {_})*` | `r"[a-z][a-z0-9_]*"` | `padre`, `persona_1`, `is_` | `Padre` no es `ATOM`; `a-b` no es un átomo único; `á` no es identificador ASCII. | Ninguno. | **Registrar** lexema original y reutilizar entrada para repeticiones. |
+| `ATOM` | Palabra no entrecomillada iniciada por minúscula ASCII. | `LOWER (LETTER ∪ DIGIT ∪ {_})*` | `r"[a-z][A-Za-z0-9_]*"` | `padre`, `persona_1`, `personaX`, `is_` | `Padre` no es `ATOM`; `a-b` no es un átomo único; `á` no es identificador ASCII. | Ninguno. | **Registrar** lexema original y reutilizar entrada para repeticiones. |
 | `QUOTED_ATOM` | Átomo delimitado por comillas simples. Puede contener espacios, caracteres especiales y Unicode conforme al esquema de escapes. | `' (SAFE_SINGLE \| ESC_SINGLE)* '` donde `ESC_SINGLE = \\(\\ \| \' \| n \| r \| t)` | `r"'(?:[^\\'\r\n]|\\[\\'nrt])*'"` | `'Juan Pérez'`, `':-'`, `'it\'s'`, `'ruta\\tmp'`, `'línea\n'` | `'sin cierre`; `'a\q'`; una comilla simple interna sin escape. `\"` no es escape válido aquí. | Ninguno; las comillas forman parte del lexema. | **Registrar** usando el lexema entrecomillado exacto; no des-escapar ni quitar comillas. |
 | `VARIABLE` | Variable nombrada por mayúscula ASCII o por `_` seguido de al menos un carácter permitido. | `UPPER ID_CONT* \| _ ID_CONT+` | `r"(?:[A-Z][A-Za-z0-9_]*|_[A-Za-z0-9_]+)"` | `X`, `Persona`, `_Temporal`, `_1`, `A_2` | `_` es `ANONYMOUS_VARIABLE`; `9X` no es variable; `á` y `ñ` no son inicios válidos. | Ninguno; no se resuelve su alcance. | **Registrar** lexema original, sin deducir identidad semántica. |
 | `ANONYMOUS_VARIABLE` | El lexema formado por un único guion bajo. | `_` | `r"_"` | `_` | `_X`, `__`, `_1` son `VARIABLE`, no anónimos. | Ninguno. | **Ignorar para la tabla** como identificador reutilizable, aunque el token conserve `_`. |
@@ -356,7 +356,7 @@ etapa.
 
 | Token | Expresión regular | Constante futura de implementación | Casos de prueba previstos |
 |---|---|---|---|
-| `ATOM` | `[a-z][a-z0-9_]*` | `ATOM` | `V-ATOM-01 padre`, `V-ATOM-02 persona_1`, `V-ATOM-03 isla`, `E-ATOM-01 á fuera de comillas` |
+| `ATOM` | `[a-z][A-Za-z0-9_]*` | `ATOM` | `V-ATOM-01 padre`, `V-ATOM-02 persona_1`, `V-ATOM-03 isla`, `V27 personaX`, `E-ATOM-01 á fuera de comillas` |
 | `QUOTED_ATOM` | `'(?:[^\\'\r\n]|\\[\\'nrt])*'` | `QUOTED_ATOM` | `V-QATOM-01 'Juan Pérez'`, `V-QATOM-02 'it\'s'`, `E-QATOM-01 'sin cierre`, `E-QATOM-02 'a\q'` |
 | `VARIABLE` | `(?:[A-Z][A-Za-z0-9_]*|_[A-Za-z0-9_]+)` | `VARIABLE` | `V-VAR-01 X`, `V-VAR-02 _Temporal`, `V-VAR-03 _1`, `P-PRIO-01 _/_Tmp` |
 | `ANONYMOUS_VARIABLE` | `_` | `ANONYMOUS_VARIABLE` | `V-ANON-01 _`, `P-PRIO-01 _/_Tmp` |

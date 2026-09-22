@@ -331,6 +331,12 @@ VALID_CASES: list[dict] = [
             (TokenType.RBRACKET, "]", 1, 10, None),
         ],
     },
+    {
+        "id": "V27",
+        "objetivo": "átomo con mayúsculas interiores",
+        "source": "personaX",
+        "expected": [(TokenType.ATOM, "personaX", 1, 1, None)],
+    },
 ]
 
 

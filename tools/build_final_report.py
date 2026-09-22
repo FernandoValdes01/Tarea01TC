@@ -35,7 +35,7 @@ from build_report_diagrams import build as build_diagrams
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT_SOURCE = ROOT / "docs" / "informe" / "informe_tecnico.md"
-DEFAULT_OUTPUT = ROOT / "docs" / "informe" / "Fernandovaldestareaspark.pdf"
+DEFAULT_OUTPUT = ROOT / "docs" / "informe" / "Tarea_JefeGrupo_FernandoValdes.pdf"
 LOGO = ROOT / "docs" / "ing_civil-informatica_gris.png"
 
 BLUE = colors.HexColor("#007DB3")

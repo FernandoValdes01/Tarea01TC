@@ -338,7 +338,7 @@ aceptaciones en una secuencia única de tokens.
 
 ## 8. Lista de verificación contractual
 
-- `ATOM` usa exactamente `[a-z][a-z0-9_]*`.
+- `ATOM` usa exactamente `[a-z][A-Za-z0-9_]*`.
 - `VARIABLE` y `ANONYMOUS_VARIABLE` separan `_` de `_` con continuación.
 - `INTEGER` y `REAL` no incluyen signo y exigen dígitos a ambos lados del punto
   real.

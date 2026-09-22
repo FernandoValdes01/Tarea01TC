@@ -13,7 +13,7 @@
 
 ### Resumen
 
-Este informe presenta el análisis, diseño, implementación y validación de un analizador léxico para un subconjunto de Prolog inspirado en la notación de ISO Prolog y SWI-Prolog. El trabajo define formalmente el catálogo de tokens con una expresión regular por categoría, modela las categorías principales con autómatas finitos, muestra la determinización por construcción de subconjuntos y la minimización por refinamiento de particiones sobre un subconjunto representativo, e implementa el lexer en Python con recorrido de izquierda a derecha, máxima coincidencia y prioridades explícitas. El lexer emite tipo, lexema original, línea y columna por token, administra una tabla de lexemas con deduplicación por par tipo y lexema, y reporta seis clases de error con fragmento y posición continuando el análisis. La validación usa una suite de 85 pruebas automatizadas con 26 casos válidos, 22 de prioridad, 16 inválidos y dos archivos completos, con resultado real de 85 aprobadas y cero fallos.
+Este informe presenta el análisis, diseño, implementación y validación de un analizador léxico para un subconjunto de Prolog inspirado en la notación de ISO Prolog y SWI-Prolog. El trabajo define formalmente el catálogo de tokens con una expresión regular por categoría, modela las categorías principales con autómatas finitos, muestra la determinización por construcción de subconjuntos y la minimización por refinamiento de particiones sobre un subconjunto representativo, e implementa el lexer en Python con recorrido de izquierda a derecha, máxima coincidencia y prioridades explícitas. El lexer emite tipo, lexema original, línea y columna por token, administra una tabla de lexemas con deduplicación por par tipo y lexema, y reporta seis clases de error con fragmento y posición continuando el análisis. La validación usa una suite de 86 pruebas automatizadas con 27 casos válidos, 22 de prioridad, 16 inválidos y dos archivos completos, con resultado real de 86 aprobadas y cero fallos.
 
 **Palabras clave:** análisis léxico, Prolog, expresiones regulares, autómatas finitos, tabla de lexemas.
 
@@ -53,7 +53,7 @@ El contrato completo vive en `docs/informe/01_especificacion_lexica.md` y este c
 
 | Token | Descripción | Patrón Python (`re`) | Ejemplos válidos | Exclusiones | Atributo |
 | ----- | ----------- | --------------------- | ---------------- | ----------- | -------- |
-| `ATOM` | Átomo simple iniciado por minúscula ASCII. | `[a-z][a-z0-9_]*` | `padre`, `persona_1`, `isla` | `Padre`, `á` | ninguno |
+| `ATOM` | Átomo simple iniciado por minúscula ASCII. | `[a-z][A-Za-z0-9_]*` | `padre`, `persona_1`, `personaX`, `isla` | `Padre`, `á` | ninguno |
 | `QUOTED_ATOM` | Átomo delimitado por comillas simples. | `'(?:[^\\'\r\n]|\\[\\'nrt])*'` | `'Juan Pérez'`, `':-'`, `'it\'s'` | `'sin cierre`, `'a\q'`, `\"` interno | ninguno |
 | `VARIABLE` | Identificador iniciado por mayúscula o `_` con continuación. | `(?:[A-Z][A-Za-z0-9_]*|_[A-Za-z0-9_]+)` | `X`, `Persona`, `_Temporal`, `_1` | `_` solo, `9X` | ninguno |
 | `ANONYMOUS_VARIABLE` | Guion bajo aislado. | `_` | `_` | `_X`, `__` (son `VARIABLE`) | ninguno |
@@ -71,7 +71,7 @@ Las convenciones adoptadas son: los números no tienen signo (`-12` son dos toke
 
 Las figuras usan la convención `estado --símbolo--> estado`; un estado cuya etiqueta contiene `/ TOKEN` es aceptor y declara el token reconocido. Los alfabetos abreviados son `LOWER = [a-z]`, `UPPER = [A-Z]`, `DIGIT = [0-9]` e `ID = [A-Za-z0-9_]`.
 
-Figura 1, AFD de átomos: `q0 --LOWER--> ((q1))` y `q1 --[a-z0-9_]--> q1`. El estado inicial es `q0` y el único estado de aceptación es `q1`, que reconoce `ATOM`. Cualquier otro primer carácter no tiene transición y el dispatcher del lexer lo deriva a otra categoría o a error.
+Figura 1, AFD de átomos: `q0 --LOWER--> ((q1))` y `q1 --[A-Za-z0-9_]--> q1`. El estado inicial es `q0` y el único estado de aceptación es `q1`, que reconoce `ATOM`. Cualquier otro primer carácter no tiene transición y el dispatcher del lexer lo deriva a otra categoría o a error.
 
 Figura 2, AFD de variables y anónima: `q0 --UPPER--> ((q1))`, `q0 --_--> q2`, `q1 --ID--> q1`, `q2 --ID--> ((q3))` y `q3 --ID--> q3`. El estado `q1` reconoce `VARIABLE` mayúscula, `q3` reconoce `VARIABLE` con guion bajo y el estado `q2` sin continuación se resuelve por la regla prioritaria de `_` aislado como `ANONYMOUS_VARIABLE`, nunca como variable.
 
@@ -180,7 +180,7 @@ La salida real del archivo con errores contiene exactamente estos 12 diagnóstic
 
 ## 9. Plan de pruebas y resultados
 
-La suite `tests/test_lexer.py` suma 85 pruebas: 3 del modelo `Token`, 26 válidas `V01`–`V26` con tokens y posiciones exactas, 22 de prioridad `P01`–`P22`, 16 inválidas `I01`–`I16` con clase, fragmento, posición y recuperación, 12 transversales `T01`–`T12` de posiciones, comentarios, escapes, tabla y acumulación, y 6 de archivos `F01`–`F06` incluyendo lectura de los dos programas completos, de los 8 archivos de `validos/` y de los 6 de `invalidos/`, más la verificación del mínimo de corpus. La matriz completa con el resultado real de cada caso vive en `docs/informe/04_matriz_de_pruebas.md`.
+La suite `tests/test_lexer.py` suma 86 pruebas: 3 del modelo `Token`, 27 válidas `V01`–`V27` con tokens y posiciones exactas, 22 de prioridad `P01`–`P22`, 16 inválidas `I01`–`I16` con clase, fragmento, posición y recuperación, 12 transversales `T01`–`T12` de posiciones, comentarios, escapes, tabla y acumulación, y 6 de archivos `F01`–`F06` incluyendo lectura de los dos programas completos, de los 8 archivos de `validos/` y de los 6 de `invalidos/`, más la verificación del mínimo de corpus. La matriz completa con el resultado real de cada caso vive en `docs/informe/04_matriz_de_pruebas.md`.
 
 | ID | Entrada o archivo | Objetivo | Resultado esperado | Resultado obtenido | Estado |
 | -- | ----------------- | -------- | ------------------ | ------------------ | ------ |
@@ -191,7 +191,7 @@ La suite `tests/test_lexer.py` suma 85 pruebas: 3 del modelo `Token`, 26 válida
 | F01 | `programa_valido.pl` | Cobertura integral | 0 errores, 17 tipos y 6 familias | 207 tokens, 0 errores | OK |
 | F02 | `programa_con_errores.pl` | Diagnósticos y continuidad | ≥8 errores recuperables | 69 tokens y 12 errores | OK |
 
-El archivo válido produce 207 tokens, 0 errores y 48 entradas, cubriendo los 17 tipos de token y las 6 familias. El archivo con errores produce 69 tokens, 12 errores de las 6 clases en 12 líneas distintas y 28 entradas, con tokens válidos después de cada error recuperable y ningún token después del bloque sin cierre final. El comando ejecutado fue `uv run --with pytest python -m pytest -q` con resultado real `85 passed`; además `python -m compileall src tests` terminó sin errores y `git diff --check` salió limpio.
+El archivo válido produce 207 tokens, 0 errores y 48 entradas, cubriendo los 17 tipos de token y las 6 familias. El archivo con errores produce 69 tokens, 12 errores de las 6 clases en 12 líneas distintas y 28 entradas, con tokens válidos después de cada error recuperable y ningún token después del bloque sin cierre final. El comando ejecutado fue `uv run --with pytest python -m pytest -q` con resultado real `86 passed`; además `python -m compileall src tests` terminó sin errores y `git diff --check` salió limpio.
 
 ### 9.1 Análisis de resultados
 
@@ -201,7 +201,7 @@ La principal dificultad fue distinguir el punto de fin de cláusula del punto de
 
 ## 10. Conclusiones
 
-El trabajo muestra que un lexer riguroso nace de decisiones contractuales explícitas antes que del código: alfabeto ASCII, números sin signo, escapes cerrados por delimitador, comentarios no anidables y máxima coincidencia con prioridades resolvieron todas las ambigüedades sin casos especiales en la implementación. Los objetivos se cumplieron de forma medible con 85 pruebas aprobadas, cobertura total de categorías y familias, y dos archivos completos que ejercitan el recorrido real.
+El trabajo muestra que un lexer riguroso nace de decisiones contractuales explícitas antes que del código: alfabeto ASCII, números sin signo, escapes cerrados por delimitador, comentarios no anidables y máxima coincidencia con prioridades resolvieron todas las ambigüedades sin casos especiales en la implementación. Los objetivos se cumplieron de forma medible con 86 pruebas aprobadas, cobertura total de categorías y familias, y dos archivos completos que ejercitan el recorrido real.
 
 Las limitaciones reales son que el lexer solo reconoce el subconjunto contratado y que los archivos válidos deben separar con espacio un número del punto final por la regla de número mal formado. Como mejoras futuras se proponen modos de salida adicionales (JSON o CSV de tokens), un visualizador de autómatas generado desde las expresiones del código y pruebas de rendimiento sobre archivos grandes, sin ampliar el subconjunto ni entrar en análisis sintáctico.
 

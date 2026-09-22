@@ -25,12 +25,12 @@ python -m src.main archivo.pl --tabla
 python -m src.main archivo.pl --show-attributes
 python tools/build_report_diagrams.py
 /home/corvo/.codex/skills/latex-workflow/scripts/compile_latex.sh \\
-  docs/informe/Fernandovaldestareaspark.tex
+  docs/informe/Tarea_JefeGrupo_FernandoValdes.tex
 ```
 
 La salida normal lista un token por línea como `<TIPO, 'lexema', línea, columna>`. `--show-attributes` agrega la familia o el índice léxico y `--tabla` vuelca la tabla de lexemas. Los errores se imprimen en `stderr`; el código de salida es 1 si hubo errores y 0 si no.
 
-`build_report_diagrams.py` genera `docs/informe/automatas_appendix.pdf` como gráficos vectoriales con composición académica controlada. Las fuentes Mermaid (`.mmd`) conservan la especificación editable de estados y transiciones. El informe canónico se edita en `docs/informe/Fernandovaldestareaspark.tex` y se compila con `blang/latex:ubuntu` mediante `latexmk`; el resultado queda en `docs/informe/Fernandovaldestareaspark.pdf` con tamaño carta y la estructura del formato oficial. `tools/build_final_report.py` se conserva como generador histórico de la versión ReportLab.
+`build_report_diagrams.py` genera `docs/informe/automatas_appendix.pdf` como gráficos vectoriales con composición académica controlada. Las fuentes Mermaid (`.mmd`) conservan la especificación editable de estados y transiciones. El informe canónico se edita en `docs/informe/Tarea_JefeGrupo_FernandoValdes.tex` y se compila con `blang/latex:ubuntu` mediante `latexmk`; el resultado queda en `docs/informe/Tarea_JefeGrupo_FernandoValdes.pdf` con tamaño carta y la estructura del formato oficial. `tools/build_final_report.py` se conserva como generador histórico de la versión ReportLab.
 
 ## Ejecución de pruebas
 
@@ -40,13 +40,13 @@ python -m pytest -q
 git diff --check
 ```
 
-Resultado real de la integración: 85 pruebas aprobadas y cero fallos.
+Resultado real de la integración: 86 pruebas aprobadas y cero fallos.
 
 ## Estructura
 
 - `src/`: código del analizador léxico (`tokens.py`, `errors.py`, `symbol_table.py`, `lexer.py`, `main.py`).
 - `tests/`: pruebas (`test_lexer.py`) y corpus (`corpus/validos/`, `corpus/invalidos/`, `corpus/entradas/` con `programa_valido.pl` y `programa_con_errores.pl`).
-- `docs/`: informe, autómatas y referencias (`docs/informe/Fernandovaldestareaspark.tex`, `docs/informe/01_especificacion_lexica.md`, `docs/informe/04_matriz_de_pruebas.md`, `docs/informe/informe_tecnico.md`, `docs/informe/referencias.md`, `docs/informe/anexos.md` y PDF final).
+- `docs/`: informe, autómatas y referencias (`docs/informe/Tarea_JefeGrupo_FernandoValdes.tex`, `docs/informe/01_especificacion_lexica.md`, `docs/informe/04_matriz_de_pruebas.md`, `docs/informe/informe_tecnico.md`, `docs/informe/referencias.md`, `docs/informe/anexos.md` y PDF final).
 - `tools/build_report_diagrams.py`: genera el anexo PDF con los diagramas de autómatas.
 - `tools/build_final_report.py`: generador histórico ReportLab; el PDF entregable se compila desde el `.tex` con el helper de LaTeX.
 
