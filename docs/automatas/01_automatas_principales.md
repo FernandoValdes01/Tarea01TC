@@ -27,14 +27,16 @@ El AFD es `M_A = (Q_A, Σ_A, δ_A, a0, F_A)`:
 - `F_A = {a1}`, etiquetado `ATOM`;
 - `C_A = LETTER ∪ DIGIT ∪ {_}`.
 
-| Estado | `LOWER` | `DIGIT` o `_` | otro símbolo | Aceptación |
+| Estado | `LOWER` | `UPPER`, `DIGIT` o `_` | otro símbolo | Aceptación |
 |---|---|---|---|---|
 | `a0` | `a1` | `∅` | `∅` | No |
 | `a1` | `a1` | `a1` | `∅` | `ATOM` |
 | `∅` | `∅` | `∅` | `∅` | No |
 
-La tabla separa `LOWER` de `DIGIT` y `_` porque solo una minúscula puede iniciar
-el lexema. Una mayúscula tampoco pertenece a `C_A`, de acuerdo con la especificación léxica.
+La tabla separa el primer carácter del resto: desde `a0`, solamente `LOWER`
+lleva a `a1`, de modo que una mayúscula no puede iniciar un `ATOM`; desde `a1`,
+en cambio, `LETTER`, `DIGIT` o `_` mantienen a `a1`, de modo que una mayúscula
+sí puede aparecer después del primer carácter.
 
 [Fuente Mermaid de la figura 1](diagramas/atomos.mmd)
 
@@ -51,10 +53,12 @@ stateDiagram-v2
     dead --> dead: Σ
 ```
 
-`padre`, `a` y `persona_1` terminan en `a1`. `Padre`, `_a` y `9a` terminan en
-`∅`. Los tres estados son distinguibles: `a1` acepta la cadena vacía restante,
-`a0` no la acepta pero admite una continuación minúscula, y `∅` no admite
-ninguna continuación que lleve a aceptar. Por eso el AFD total es mínimo.
+`padre`, `a`, `persona_1` y `personaX` terminan en `a1`: la mayúscula
+interior de `personaX` cicla en `a1` y el lexema completo es un único `ATOM`.
+`Padre`, `_a` y `9a` terminan en `∅`. Los tres estados son distinguibles: `a1`
+acepta la cadena vacía restante, `a0` no la acepta pero admite una continuación
+que lleve a aceptar, y `∅` no admite ninguna continuación que lleve a aceptar.
+Por eso el AFD total es mínimo.
 
 ## 3. Variables y variable anónima
 

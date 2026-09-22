@@ -23,14 +23,19 @@ python -m src.main tests/corpus/entradas/programa_valido.pl
 python -m src.main tests/corpus/entradas/programa_con_errores.pl
 python -m src.main archivo.pl --tabla
 python -m src.main archivo.pl --show-attributes
-python tools/build_report_diagrams.py
-/home/corvo/.codex/skills/latex-workflow/scripts/compile_latex.sh \\
-  docs/informe/Tarea_JefeGrupo_FernandoValdes.tex
+```
+
+Compilar el informe requiere Docker (imagen `blang/latex:ubuntu`):
+
+```bash
+docker run --rm --user "$(id -u):$(id -g)" \
+  -v "$PWD":/work -w /work/docs/informe blang/latex:ubuntu \
+  latexmk -pdf -interaction=nonstopmode -halt-on-error Tarea_JefeGrupo_FernandoValdes.tex
 ```
 
 La salida normal lista un token por línea como `<TIPO, 'lexema', línea, columna>`. `--show-attributes` agrega la familia o el índice léxico y `--tabla` vuelca la tabla de lexemas. Los errores se imprimen en `stderr`; el código de salida es 1 si hubo errores y 0 si no.
 
-`build_report_diagrams.py` genera `docs/informe/automatas_appendix.pdf` como gráficos vectoriales con composición académica controlada. Las fuentes Mermaid (`.mmd`) conservan la especificación editable de estados y transiciones. El informe canónico se edita en `docs/informe/Tarea_JefeGrupo_FernandoValdes.tex` y se compila con `blang/latex:ubuntu` mediante `latexmk`; el resultado queda en `docs/informe/Tarea_JefeGrupo_FernandoValdes.pdf` con tamaño carta y la estructura del formato oficial. `tools/build_final_report.py` se conserva como generador histórico de la versión ReportLab.
+`tools/build_report_diagrams.py` es un auxiliar histórico: generaba `docs/informe/automatas_appendix.pdf`, que el informe final ya no incorpora. Los diagramas oficiales están en la sección 5 del `.tex` y sus fuentes Mermaid (`.mmd`) conservan la especificación editable de estados y transiciones. El informe canónico se edita en `docs/informe/Tarea_JefeGrupo_FernandoValdes.tex` y se compila con `blang/latex:ubuntu` mediante `latexmk` (ver comando anterior); el resultado queda en `docs/informe/Tarea_JefeGrupo_FernandoValdes.pdf` con tamaño carta y la estructura del formato oficial. `tools/build_final_report.py` se conserva como generador histórico de la versión ReportLab.
 
 ## Ejecución de pruebas
 

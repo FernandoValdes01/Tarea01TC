@@ -3,6 +3,10 @@
 Las fuentes Mermaid se conservan como especificación editable de la estructura,
 pero la composición del PDF se dibuja de forma explícita. Así se evitan los
 cruces, curvas y rótulos superpuestos del diseño automático.
+
+NOTA HISTÓRICA: el informe final ya no incorpora este anexo; los diagramas
+oficiales viven en la sección 5 del .tex. Este script se conserva como auxiliar
+para regenerar docs/informe/automatas_appendix.pdf si se necesita.
 """
 
 from __future__ import annotations

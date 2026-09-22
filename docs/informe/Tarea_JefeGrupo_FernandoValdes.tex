@@ -24,7 +24,6 @@
 \usepackage{microtype}
 \DisableLigatures{encoding=T1, family=tt*}
 \usepackage{caption}
-\usepackage{pdfpages}
 \usepackage{hyperref}
 
 \definecolor{darkblue}{HTML}{1F3864}
@@ -284,8 +283,8 @@ Los literales entrecomillados siguen el esquema \texttt{D ... D} con estado de e
     \draw[flecha] (l0) -- node[above]{\code{D}} (lb);
     \draw[flecha] (lb) to[loop below] node[below]{\code{excepto D, \textbackslash, salto}} (lb);
     \draw[flecha] (lb) -- node[above]{\code{D}} (lf);
-    \draw[flecha] (lb) -- node[pos=0.2, above]{\code{\textbackslash}} (le);
-    \draw[flecha] (le) -- node[pos=0.5, below]{escape válido} (lb);
+    \draw[flecha] (lb) -- node[pos=0.25, below]{\code{\textbackslash}} (le);
+    \draw[flecha] (le) to[bend right=22] node[pos=0.5, above]{escape válido} (lb);
     \draw[flecha, dashed] (le) to[bend left=12] node[right]{otro} (lerr);
     \node[below=0.3cm of lf, align=center]{\code{QUOTED\_ATOM /} \\ \code{STRING}};
   \end{tikzpicture}
@@ -310,7 +309,7 @@ Los comentarios separan la rama de línea (\texttt{\%} hasta el salto, que acept
     \draw[flecha] (cb) to[loop above] node[above]{excepto \code{*}} (cb);
     \draw[flecha] (cb) -- node[above]{\code{*}} (ct);
     \draw[flecha] (ct) to[loop above] node[above]{\code{*}} (ct);
-    \draw[flecha] (ct.south) to[out=240, in=300, looseness=1.25] node[below, yshift=-2pt]{otro} (cb.south);
+    \draw[flecha] (ct.south) to[out=240, in=300, looseness=1.3] node[below, yshift=-2pt]{otro} (cb.south);
     \draw[flecha] (ct) -- node[above]{\code{/}} (cf);
     \node[right=0.15cm of cl]{\code{LÍNEA}};
     \node[below=0.3cm of cf]{\code{BLOQUE}};
@@ -683,15 +682,11 @@ python -m compileall -q src tests tools
 uv run --with pytest python -m pytest -q
 python -m src.main tests/corpus/entradas/programa_valido.pl
 python -m src.main tests/corpus/entradas/programa_con_errores.pl
-python tools/build_report_diagrams.py
 git diff --check
 \end{lstlisting}
 
 Resultados reales: \code{compileall} sin errores, 86 pruebas aprobadas, PDF generado correctamente y \lstinline|git diff --check| limpio. El archivo válido produce 207 tokens, 0 errores y 48 entradas; el archivo con errores produce 69 tokens, 12 errores y 28 entradas. Frente a la rúbrica: especificación y expresiones regulares en la sección 4, autómatas con AFN, subconjuntos y minimización en la sección 5, implementación con posiciones y tabla en la sección 7, y pruebas con errores léxicos en las secciones 8 y 9.
 
-Las nueve figuras vectoriales del anexo se incorporan a continuación desde \code{automatas\_appendix.pdf}, generadas con \code{build\_report\_diagrams.py} a partir de las fuentes de \code{docs/automatas/diagramas/}.
-
-\clearpage
-\includepdf[pages=-,fitpaper=true,pagecommand={\thispagestyle{plain}}]{automatas_appendix.pdf}
+Los diagramas oficiales del trabajo son los de la sección 5. Sus fuentes editables en Mermaid se conservan en \code{docs/automatas/diagramas/} y el desarrollo formal de cada construcción en \code{docs/automatas/}.
 
 \end{document}
