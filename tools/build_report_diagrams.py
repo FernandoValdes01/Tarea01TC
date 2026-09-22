@@ -23,13 +23,16 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "docs" / "informe" / "automatas_appendix.pdf"
 
 NAVY = colors.HexColor("#183B56")
+DARK_BLUE = colors.HexColor("#183B56")
 BLUE = colors.HexColor("#007DB3")
+YELLOW = colors.HexColor("#FDC400")
 PALE_BLUE = colors.HexColor("#E8F3F8")
 INK = colors.HexColor("#20252B")
 MUTED = colors.HexColor("#5E6A73")
 RULE = colors.HexColor("#C9D7DE")
 PAPER = colors.white
 SINK_FILL = colors.HexColor("#F2F4F5")
+LIGHT_PANEL = colors.HexColor("#F4F5F5")
 
 
 def register_fonts() -> tuple[str, str, str]:
@@ -82,7 +85,7 @@ def footer(c: Canvas, note: str = "") -> None:
     c.line(34, 28, width - 34, 28)
     c.setFillColor(MUTED)
     c.setFont(REGULAR, 7.2)
-    c.drawString(34, 16, note or "Convención: doble círculo = estado de aceptación; ∅ = estado sumidero.")
+    c.drawString(34, 16, note or "Convención: doble círculo = estado de aceptación; SINK = estado sumidero.")
     c.drawRightString(width - 34, 16, "INFO1148 · Teoría de la Computación")
 
 
@@ -170,15 +173,26 @@ def poly_transition(c: Canvas, points: list[tuple[float, float]], label: str, lx
 
 def loop(c: Canvas, node: Node, label: str, radius: float = 23, above: bool = True) -> None:
     direction = 1 if above else -1
+    # La unión debe quedar sobre la circunferencia, no sobre el cuadrado
+    # delimitador del estado. Esto evita el pequeño espacio que se veía entre
+    # el bucle y el estado en los diagramas de números y comentarios.
+    attach_x = radius * 0.46
+    attach_y = math.sqrt(radius * radius - attach_x * attach_x)
+    start_x = node.x - attach_x
+    end_x = node.x + attach_x
+    base_y = node.y + direction * attach_y
+    control_y = node.y + direction * (radius + 39)
     y = node.y + direction * radius
     c.setStrokeColor(INK)
     c.setLineWidth(1.0)
     path = c.beginPath()
-    path.moveTo(node.x - 10, y - direction * 2)
-    path.curveTo(node.x - 30, y + direction * 34, node.x + 30, y + direction * 34, node.x + 10, y - direction * 2)
+    path.moveTo(start_x, base_y)
+    path.curveTo(node.x - radius * 1.35, control_y, node.x + radius * 1.35, control_y, end_x, base_y)
     c.drawPath(path, stroke=1, fill=0)
-    arrow_head(c, node.x + 10, y - direction * 2, -math.pi / 3 if above else math.pi / 3)
-    label_box(c, node.x, y + direction * 28, label)
+    # El último tramo desciende hacia el estado cuando el bucle está arriba,
+    # y asciende hacia el estado cuando está abajo.
+    arrow_head(c, end_x, base_y, -math.pi / 2 if above else math.pi / 2)
+    label_box(c, node.x, node.y + direction * (radius + 37), label)
 
 
 def legend(c: Canvas, items: list[tuple[str, str]], x: float = 45, y: float = 48) -> None:
@@ -195,17 +209,17 @@ def legend(c: Canvas, items: list[tuple[str, str]], x: float = 45, y: float = 48
 
 
 def diagram_1(c: Canvas) -> None:
-    page_header(c, 1, "AFD para átomos no entrecomillados", "Reconoce LOWER (LOWER ∪ DIGIT ∪ {_})* mediante máxima coincidencia.")
-    a0 = Node("a₀", 205, 300); a1 = Node("a₁", 420, 300, "ATOM", True); dead = Node("∅", 635, 180, sink=True)
-    start_arrow(c, a0); transition(c, a0, a1, "LOWER"); loop(c, a1, "LOWER ∪ DIGIT ∪ {_}")
-    transition(c, a0, dead, "otro", label_offset=-12, dashed=True); transition(c, a1, dead, "otro", label_offset=12, dashed=True); loop(c, dead, "Σ", above=False)
+    page_header(c, 1, "AFD para átomos no entrecomillados", "Reconoce LOWER (LOWER U DIGIT U {_})* mediante máxima coincidencia.")
+    a0 = Node("a0", 205, 300); a1 = Node("a1", 420, 300, "ATOM", True); dead = Node("SINK", 635, 180, sink=True)
+    start_arrow(c, a0); transition(c, a0, a1, "LOWER"); loop(c, a1, "LOWER U DIGIT U {_}")
+    transition(c, a0, dead, "otro", label_offset=-12, dashed=True); transition(c, a1, dead, "otro", label_offset=12, dashed=True); loop(c, dead, "SIGMA", above=False)
     for n in (a0, a1, dead): state(c, n)
     legend(c, [("aceptación", "Estado aceptor y token emitido"), ("sumidero", "Estado sumidero")]); footer(c)
 
 
 def diagram_2(c: Canvas) -> None:
     page_header(c, 2, "AFD para variables", "Distingue variables con nombre de la variable anónima `_`.")
-    v0=Node("v₀",175,300); vu=Node("vᵤ",385,370,"VARIABLE",True); va=Node("v_",385,205,"ANONYMOUS_VARIABLE",True); vn=Node("vₙ",625,205,"VARIABLE",True)
+    v0=Node("v0",175,300); vu=Node("vU",385,370,"VARIABLE",True); va=Node("v_",385,205,"ANONYMOUS_VARIABLE",True); vn=Node("vN",625,205,"VARIABLE",True)
     start_arrow(c,v0); transition(c,v0,vu,"UPPER"); transition(c,v0,va,"_"); loop(c,vu,"ID_CONT"); transition(c,va,vn,"ID_CONT"); loop(c,vn,"ID_CONT")
     for n in (v0,vu,va,vn): state(c,n)
     footer(c,"ID_CONT = letras, dígitos o `_`. La variable anónima solo acepta exactamente un guion bajo.")
@@ -213,15 +227,15 @@ def diagram_2(c: Canvas) -> None:
 
 def diagram_3(c: Canvas) -> None:
     page_header(c,3,"AFD para números","Reconoce enteros y reales sin signo; el punto decimal exige un dígito posterior.")
-    n0=Node("n₀",135,285); ni=Node("nᵢ",330,285,"INTEGER",True); np=Node("nₚ",515,285); nr=Node("nᵣ",705,285,"REAL",True)
+    n0=Node("n0",135,285); ni=Node("nI",330,285,"INTEGER",True); np=Node("nP",515,285); nr=Node("nR",705,285,"REAL",True)
     start_arrow(c,n0); transition(c,n0,ni,"DIGIT"); loop(c,ni,"DIGIT"); transition(c,ni,np,"."); transition(c,np,nr,"DIGIT"); loop(c,nr,"DIGIT")
     for n in (n0,ni,np,nr): state(c,n)
-    footer(c,"nₚ no es aceptor: una entrada como `5.` se diagnostica como número mal formado.")
+    footer(c,"nP no es aceptor: una entrada como `5.` se diagnostica como número mal formado.")
 
 
 def diagram_4(c: Canvas) -> None:
     page_header(c,4,"AFD para literales entrecomillados","Esquema parametrizado por delimitador D: comilla simple o comilla doble.")
-    l0=Node("l₀",110,300); lb=Node("lᴮ",285,300); le=Node("lᴱ",465,405); lf=Node("lᶠ",650,300,"QUOTED_ATOM / STRING",True); err=Node("ERR",650,145,sink=True)
+    l0=Node("l0",110,300); lb=Node("lB",285,300); le=Node("lE",465,405); lf=Node("lF",650,300,"QUOTED_ATOM / STRING",True); err=Node("ERR",650,145,sink=True)
     start_arrow(c,l0); transition(c,l0,lb,"D"); loop(c,lb,"SAFE_D",above=False); transition(c,lb,le,"\\",label_offset=12); transition(c,le,lb,"VALID_ESCAPE_D",label_offset=12); transition(c,lb,lf,"D"); transition(c,le,err,"otro",label_offset=-12,dashed=True)
     for n in (l0,lb,le,lf,err): state(c,n)
     footer(c,"SAFE_D excluye el delimitador, la barra inversa y los saltos de línea.")
@@ -229,10 +243,10 @@ def diagram_4(c: Canvas) -> None:
 
 def diagram_5(c: Canvas) -> None:
     page_header(c,5,"AFD para comentarios","Ramas independientes para comentario de línea y comentario de bloque.")
-    c0=Node("c₀",95,300); cl=Node("cᴸ",315,410,"COMENTARIO DE LÍNEA",True); cs=Node("c/",235,205); cb=Node("cᴮ",420,205); ct=Node("c*",585,205); cf=Node("cᶠ",740,205,"COMENTARIO DE BLOQUE",True)
+    c0=Node("c0",95,300); cl=Node("cL",315,410,"COMENTARIO DE LÍNEA",True); cs=Node("c/",235,205); cb=Node("cB",420,205); ct=Node("c*",585,205); cf=Node("cF",740,205,"COMENTARIO DE BLOQUE",True)
     start_arrow(c,c0); transition(c,c0,cl,"%",radius=20); loop(c,cl,"excepto CR/LF",radius=20); transition(c,c0,cs,"/",radius=20,label_offset=-10); transition(c,cs,cb,"*",radius=20); loop(c,cb,"excepto *",radius=20,above=False); transition(c,cb,ct,"*",radius=20); loop(c,ct,"*",radius=20); transition(c,ct,cb,"excepto * y /",radius=20,label_offset=-12); transition(c,ct,cf,"/",radius=20)
     for n in (c0,cl,cs,cb,ct,cf): state(c,n,20)
-    footer(c,"El fin de línea cierra la rama cᴸ. Solo la secuencia `*/` cierra la rama de bloque.")
+    footer(c,"El fin de línea cierra la rama cL. Solo la secuencia `*/` cierra la rama de bloque.")
 
 
 def small_node(c: Canvas, x: float, y: float, label: str, accepting: bool = False) -> None:
@@ -270,27 +284,91 @@ def trie_panel(
 def diagram_6(c: Canvas) -> None:
     page_header(c,6,"Trie de operadores","Organización por prefijo para aplicar máxima coincidencia antes de emitir el token.")
     trie_panel(c,"OPERADORES DE UN CARÁCTER",420,70,
-        {"o₀":(75,30,False),",":(300,46,True),"OP₁":(550,22,True)},
-        [("o₀",",",","),("o₀","OP₁","{+, !, ;, <}")])
+        {"o0":(75,30,False),",":(300,46,True),"OP1":(550,22,True)},
+        [("o0",",",","),("o0","OP1","{+, !, ;, <}")])
     trie_panel(c,"PREFIJOS ARITMÉTICOS",320,88,
-        {"o₀":(75,37,False),"-":(235,62,True),"--":(400,62,False),"-->":(565,62,True),"*":(235,37,True),"**":(400,37,True),"/":(235,14,True),"//":(400,14,True)},
-        [("o₀","-","-"),("-","--","-"),("--","-->",">"),("o₀","*","*"),("*","**","*"),("o₀","/","/"),("/","//","/")])
+        {"o0":(75,37,False),"-":(235,62,True),"--":(400,62,False),"-->":(565,62,True),"*":(235,37,True),"**":(400,37,True),"/":(235,14,True),"//":(400,14,True)},
+        [("o0","-","-"),("-","--","-"),("--","-->",">"),("o0","*","*"),("*","**","*"),("o0","/","/"),("/","//","/")])
     trie_panel(c,"COMPARACIÓN Y UNIFICACIÓN",188,120,
-        {"o₀":(75,50,False),"=":(210,88,True),"==":(365,102,True),"=.":(365,78,False),"=..":(520,78,True),"=<":(365,57,True),">":(210,42,True),">=":(365,40,True),"\\":(210,14,False),"\\=":(365,8,True),"\\==":(520,8,True),"\\+":(365,24,True)},
-        [("o₀","=","="),("=","==","="),("=","=.","."),("=.","=..","."),("=","=<","<"),("o₀",">",">"),(">",">=","="),("o₀","\\","\\"),("\\","\\=","="),("\\=","\\==","="),("\\","\\+","+")])
+        {"o0":(75,50,False),"=":(210,88,True),"==":(365,102,True),"=.":(365,78,False),"=..":(520,78,True),"=<":(365,57,True),">":(210,42,True),">=":(365,40,True),"\\":(210,14,False),"\\=":(365,8,True),"\\==":(520,8,True),"\\+":(365,24,True)},
+        [("o0","=","="),("=","==","="),("=","=.","."),("=.","=..","."),("=","=<","<"),("o0",">",">"),(">",">=","="),("o0","\\","\\"),("\\","\\=","="),("\\=","\\==","="),("\\","\\+","+")])
     trie_panel(c,"CLÁUSULAS Y PALABRAS RESERVADAS",68,108,
-        {"o₀":(75,43,False),":":(205,78,False),":-":(350,78,True),"?":(205,55,False),"?-":(350,55,True),"i":(205,32,False),"is":(350,32,True),"m":(205,9,False),"mo":(350,9,False),"mod":(500,9,True)},
-        [("o₀",":",":"), (":",":-","-"),("o₀","?","?"),("?","?-","-"),("o₀","i","i"),("i","is","s"),("o₀","m","m"),("m","mo","o"),("mo","mod","d")])
+        {"o0":(75,43,False),":":(205,78,False),":-":(350,78,True),"?":(205,55,False),"?-":(350,55,True),"i":(205,32,False),"is":(350,32,True),"m":(205,9,False),"mo":(350,9,False),"mod":(500,9,True)},
+        [("o0",":",":"), (":",":-","-"),("o0","?","?"),("?","?-","-"),("o0","i","i"),("i","is","s"),("o0","m","m"),("m","mo","o"),("mo","mod","d")])
     c.setFillColor(MUTED); c.setFont(REGULAR,7.2); c.drawRightString(795,52,"`is` y `mod` requieren frontera de palabra.")
-    footer(c,"Vista compacta por familias de prefijos. Las bandas comparten conceptualmente el estado inicial o₀.")
+    footer(c,"Vista compacta por familias de prefijos. Cada banda parte del estado inicial o0.")
 
 
 def diagram_7(c: Canvas) -> None:
     page_header(c,7,"AFN representativo de operadores","Lenguaje restringido a {=, ==, \\=, \\==} para mostrar la construcción formal.")
-    q0=Node("q₀",100,290); q1=Node("q₁",260,380); q2=Node("q₂",445,380,"OP_EQ",True); q3=Node("q₃",650,380,"OP_EQEQ",True); q4=Node("q₄",260,190); q5=Node("q₅",390,190); q6=Node("q₆",535,190,"OP_NEQ",True); q7=Node("q₇",700,190,"OP_NEQEQ",True)
-    start_arrow(c,q0); transition(c,q0,q1,"ε",radius=20); transition(c,q0,q4,"ε",radius=20); transition(c,q1,q2,"=",radius=20); transition(c,q2,q3,"=",radius=20); transition(c,q4,q5,"\\",radius=20); transition(c,q5,q6,"=",radius=20); transition(c,q6,q7,"=",radius=20)
+    q0=Node("q0",100,290); q1=Node("q1",260,380); q2=Node("q2",445,380,"OP_EQ",True); q3=Node("q3",650,380,"OP_EQEQ",True); q4=Node("q4",260,190); q5=Node("q5",390,190); q6=Node("q6",535,190,"OP_NEQ",True); q7=Node("q7",700,190,"OP_NEQEQ",True)
+    start_arrow(c,q0); transition(c,q0,q1,"eps",radius=20); transition(c,q0,q4,"eps",radius=20); transition(c,q1,q2,"=",radius=20); transition(c,q2,q3,"=",radius=20); transition(c,q4,q5,"\\",radius=20); transition(c,q5,q6,"=",radius=20); transition(c,q6,q7,"=",radius=20)
     for n in (q0,q1,q2,q3,q4,q5,q6,q7): state(c,n,20)
-    footer(c,"Las transiciones ε separan las dos ramas del AFN sin consumir entrada.")
+    footer(c,"Las transiciones eps separan las dos ramas del AFN sin consumir entrada.")
+
+
+def appendix_overview(c: Canvas) -> None:
+    """Página de orientación para leer el anexo antes de entrar en las figuras."""
+    page_header(c, 0, "Anexo A · guía de lectura", "Secuencia de modelos que sostiene la especificación y la implementación del lexer.")
+    c.setFillColor(DARK_BLUE if 'DARK_BLUE' in globals() else NAVY)
+    c.setFont(BOLD, 13)
+    c.drawString(52, 480, "Qué se modela")
+    c.setFillColor(INK)
+    c.setFont(REGULAR, 9)
+    lines = [
+        "Cada figura representa una decisión léxica concreta. Las cinco primeras",
+        "describen categorías y elementos ignorables; la sexta integra el despacho",
+        "por primera clase y máxima coincidencia; las dos últimas documentan la",
+        "determinización y la minimización de un subconjunto de operadores.",
+    ]
+    for index, line in enumerate(lines):
+        c.drawString(52, 458 - index * 15, line)
+
+    c.setFillColor(DARK_BLUE if 'DARK_BLUE' in globals() else NAVY)
+    c.setFont(BOLD, 13)
+    c.drawString(52, 375, "Convenciones de lectura")
+    conventions = [
+        ("Estado", "círculo con nombre ASCII estable, por ejemplo n0 o q2"),
+        ("Aceptación", "doble círculo; el rótulo inferior indica el token producido"),
+        ("Transición", "flecha etiquetada con el símbolo o clase consumida"),
+        ("Bucle", "transición que vuelve al mismo estado; la punta toca la circunferencia"),
+        ("Sumidero", "estado gris para recorridos que no producen un token válido"),
+    ]
+    y = 350
+    for label, description in conventions:
+        c.setFillColor(BLUE)
+        c.setFont(BOLD, 8.5)
+        c.drawString(58, y, label.upper())
+        c.setFillColor(INK)
+        c.setFont(REGULAR, 8.5)
+        c.drawString(165, y, description)
+        y -= 24
+
+    c.setFillColor(LIGHT_PANEL)
+    c.roundRect(52, 108, 745, 104, 8, stroke=0, fill=1)
+    c.setFillColor(DARK_BLUE if 'DARK_BLUE' in globals() else NAVY)
+    c.setFont(BOLD, 11)
+    c.drawString(70, 188, "Ruta de lectura recomendada")
+    steps = [
+        ("01", "Categorías", "átomos, variables, números, literales y comentarios"),
+        ("02", "Operadores", "prefijos comunes, máxima coincidencia y prioridades"),
+        ("03", "Construcción", "AFN, subconjuntos, estado sumidero y AFD mínimo"),
+    ]
+    x = 72
+    for number, title, description in steps:
+        c.setFillColor(YELLOW if 'YELLOW' in globals() else colors.HexColor("#FDC400"))
+        c.circle(x + 10, 153, 13, stroke=0, fill=1)
+        c.setFillColor(NAVY)
+        c.setFont(BOLD, 7)
+        c.drawCentredString(x + 10, 150, number)
+        c.setFillColor(DARK_BLUE if 'DARK_BLUE' in globals() else NAVY)
+        c.setFont(BOLD, 8.5)
+        c.drawString(x + 31, 157, title)
+        c.setFillColor(MUTED)
+        c.setFont(REGULAR, 7.3)
+        c.drawString(x + 31, 144, description)
+        x += 247
+    footer(c, "Las figuras son vectoriales y mantienen la misma convención de estados, etiquetas y colores.")
 
 
 def subset_diagram(c: Canvas, number: int, title: str, subtitle: str) -> None:
@@ -305,6 +383,7 @@ def subset_diagram(c: Canvas, number: int, title: str, subtitle: str) -> None:
 def build(output: Path) -> None:
     output.parent.mkdir(parents=True,exist_ok=True)
     c=Canvas(str(output),pagesize=landscape(A4),pageCompression=1); c.setTitle("Anexo de autómatas - analizador léxico de Prolog"); c.setAuthor("Fernando Valdes, Juan Muñoz Veloso y Vicente Rivera")
+    appendix_overview(c); c.showPage()
     for draw in (diagram_1,diagram_2,diagram_3,diagram_4,diagram_5,diagram_6,diagram_7): draw(c); c.showPage()
     subset_diagram(c,8,"AFD obtenido por construcción de subconjuntos","Cada estado representa un conjunto de estados del AFN; las salidas conservan la clasificación léxica."); c.showPage()
     subset_diagram(c,9,"AFD mínimo etiquetado","La partición estable separa A, D y Z y conserva cuatro clases de aceptación observables."); c.showPage(); c.save()

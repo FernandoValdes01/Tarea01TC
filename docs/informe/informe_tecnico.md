@@ -17,9 +17,17 @@ Este informe presenta el análisis, diseño, implementación y validación de un
 
 **Palabras clave:** análisis léxico, Prolog, expresiones regulares, autómatas finitos, tabla de lexemas.
 
+### Organización del informe
+
+El documento avanza desde el problema hacia la evidencia. Primero fija el alcance del subconjunto de Prolog y el catálogo de tokens; después formaliza las expresiones regulares y los autómatas que justifican cada decisión; a continuación describe la arquitectura del lexer, la tabla de lexemas y la recuperación de errores; finalmente presenta la matriz de pruebas, los resultados reproducibles y las conclusiones. El Anexo A incluye una guía de lectura y las figuras vectoriales; los anexos restantes reúnen la trazabilidad, los comandos ejecutados y la comprobación de la rúbrica.
+
+La separación entre especificación, implementación y validación permite revisar el trabajo por capas. Una regla del lenguaje se puede localizar en la especificación, seguir en el código y comprobar en una prueba concreta. Las cifras de tokens, errores y entradas de tabla que aparecen en el texto corresponden a ejecuciones reales del repositorio.
+
 ## 1. Introducción
 
 El análisis léxico es la primera fase de un compilador: transforma la cadena fuente en una secuencia ordenada de tokens con posición, separando las decisiones regulares (qué formas son válidas) de las decisiones sintácticas (en qué orden pueden aparecer). Un lexer correcto y bien diagnosticado simplifica el parser, produce errores comprensibles y deja evidencia reproducible de cada decisión.
+
+El trabajo se plantea como un recorrido de izquierda a derecha. En cada posición el lexer identifica la categoría que puede comenzar allí, busca el lexema válido más largo y aplica la prioridad definida cuando dos categorías empatan. Este orden es el eje que conecta las expresiones regulares, los autómatas y la implementación: los diagramas explican los recorridos posibles, mientras que el código decide qué recorrido tiene precedencia cuando las formas se superponen.
 
 Este informe documenta el subconjunto de Prolog reconocido, su especificación formal, los autómatas que lo modelan, la implementación en Python, la tabla de lexemas, el tratamiento de errores y el plan de pruebas con resultados reales. Cada afirmación remite a su respaldo: sección de la especificación, módulo del código, prueba automatizada o salida de un comando ejecutado.
 
