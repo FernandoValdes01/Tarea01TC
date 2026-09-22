@@ -6,23 +6,24 @@ Repositorio real de entrega: https://github.com/FernandoValdes01/Tarea01TC (remo
 
 ## Anexo B. Autómatas completos
 
-Se reproducen las nueve figuras del capítulo 5 con la misma convención (`--símbolo-->` y etiquetas `/ TOKEN` para los estados aceptores). Los alfabetos son `LOWER = [a-z]`, `UPPER = [A-Z]`, `DIGIT = [0-9]` e `ID = [A-Za-z0-9_]`.
+Se reproducen las nueve figuras del capítulo 5. Los autómatas usan la convención `--símbolo-->` y etiquetas `/ TOKEN` para los estados aceptores; la Figura 6 es un trie cuyos nodos muestran prefijos acumulados. Los alfabetos son `LOWER = [a-z]`, `UPPER = [A-Z]`, `DIGIT = [0-9]` e `ID = [A-Za-z0-9_]`.
 
 ```text
-Figura 1 (átomos): q0 --LOWER--> ((q1 ATOM)); q1 --[A-Za-z0-9_]--> q1.
+Figura 1 (átomos): a0 --LOWER--> ((a1 ATOM)); a1 --[A-Za-z0-9_]--> a1;
+  las entradas restantes van al estado muerto ∅, que cicla con Σ.
 Figura 2 (variables): q0 --UPPER--> ((q1 VARIABLE)); q0 --_--> q2;
   q1 --ID--> q1; q2 --ID--> ((q3 VARIABLE)); q3 --ID--> q3;
   q2 sin continuación = ANONYMOUS_VARIABLE por prioridad.
 Figura 3 (números): n0 --DIGIT--> ((nI INTEGER)); nI --DIGIT--> nI;
   nI --.--> nP; nP --DIGIT--> ((nR REAL)); nR --DIGIT--> nR.
   nP no acepta; las corridas rechazadas se diagnostican fuera del AFD como MALFORMED_NUMBER.
-Figura 4 (operadores): s0 con ramas \ -> {\=, \==, \+}, = -> {=, ==, =.., =<},
-  / -> {/, //, /*}, * -> {*, **}, : -> {:-}, ? -> {?-}, - -> {-->},
-  más <, >, +, !, ;; cada aceptación porta lexema y familia.
-Figura 5 (ignorables): [ \t] en ciclo de una columna; \n, \r, \r\n un salto;
-  % hasta antes del salto; /* ... */ hasta el primer */ o UNTERMINATED_BLOCK_COMMENT.
-Figura 6 (integrado): despachador por primera clase + máxima coincidencia +
-  prioridades contractuales; equivalente a la unión de las Figuras 1-5.
+Figura 4 (literales): D abre el literal; los caracteres seguros ciclan,
+  la barra inversa lleva al estado de escape, y solo un escape válido o D
+  permiten continuar. Otro símbolo produce error.
+Figura 5 (comentarios): % hasta antes del salto; /* ... */ hasta el primer */
+  o UNTERMINATED_BLOCK_COMMENT. El whitespace se documenta en la especificación.
+Figura 6 (trie de operadores): cada nodo conserva el prefijo acumulado y cada
+  flecha añade un símbolo; las aceptaciones conservan lexema y familia.
 Figura 7 (AFN representativo): unión ε para =, ==, \= y \==.
 Figura 8 (AFD por subconjuntos): A={q0,q1,q4}, B={q2}, C={q3},
   D={q5}, E={q6}, F={q7} y Z=∅.

@@ -210,18 +210,19 @@ Los números no tienen signo; \code{-12} son dos tokens. \code{INTEGER} y \code{
 % --------------------------------------------------------------------------
 \section{Diseño de los autómatas}
 
-Las figuras usan la convención \code{estado --símbolo--> estado}; el doble círculo indica aceptación y el rótulo inferior el token emitido. Los alfabetos abreviados son \code{LOWER=[a-z]}, \code{LETTER=[A-Za-z]}, \code{UPPER=[A-Z]}, \code{DIGIT=[0-9]} e \code{ID=[A-Za-z0-9\_]}.
+Los autómatas usan la convención \code{estado --símbolo--> estado}; el doble círculo indica aceptación y el rótulo inferior el token emitido. La Figura 6 es un trie: sus nodos muestran el prefijo acumulado y sus flechas representan la extensión de ese prefijo. Los alfabetos abreviados son \code{LOWER=[a-z]}, \code{LETTER=[A-Za-z]}, \code{UPPER=[A-Z]}, \code{DIGIT=[0-9]} e \code{ID=[A-Za-z0-9\_]}.
 
 \begin{figure}[H]
   \centering
   \begin{tikzpicture}[node distance=3.2cm]
     \node[breve, initial] (a0) {$a0$};
     \node[acept, right of=a0] (a1) {$a1$};
-    \node[breve, below of=a1, yshift=-0.5cm, fill=gray!15] (sink) {SINK};
+    \node[breve, below of=a1, yshift=-0.5cm, fill=gray!15] (sink) {$\emptyset$};
     \draw[flecha] (a0) -- node[above]{\code{LOWER}} (a1);
     \draw[flecha] (a1) to[loop above] node[above]{\code{LETTER, DIGIT, \_}} (a1);
     \draw[flecha, dashed] (a0) -- node[left]{otro} (sink);
     \draw[flecha, dashed] (a1) -- node[right]{otro} (sink);
+    \draw[flecha, dashed] (sink) to[loop below] node[below]{$\Sigma$} (sink);
     \node[below=0.2cm of a1, xshift=0.85cm]{\code{ATOM}};
   \end{tikzpicture}
   \caption{Autómata para átomos no entrecomillados.}
@@ -284,7 +285,7 @@ Los literales entrecomillados siguen el esquema \texttt{D ... D} con estado de e
     \draw[flecha] (lb) to[loop below] node[below]{\code{excepto D, \textbackslash, salto}} (lb);
     \draw[flecha] (lb) -- node[above]{\code{D}} (lf);
     \draw[flecha] (lb) -- node[pos=0.25, below]{\code{\textbackslash}} (le);
-    \draw[flecha] (le) to[bend right=22] node[pos=0.5, above]{escape válido} (lb);
+    \draw[flecha] (le) to[bend right=22] node[pos=0.42, above left, xshift=-0.2cm, yshift=0.12cm, fill=white, inner sep=1pt]{\code{escape válido}} (lb);
     \draw[flecha, dashed] (le) to[bend left=12] node[right]{otro} (lerr);
     \node[below=0.3cm of lf, align=center]{\code{QUOTED\_ATOM /} \\ \code{STRING}};
   \end{tikzpicture}
@@ -317,7 +318,7 @@ Los comentarios separan la rama de línea (\texttt{\%} hasta el salto, que acept
   \caption{Autómata para comentarios de línea y de bloque.}
 \end{figure}
 
-El trie representativo de operadores comparte prefijos para aplicar máxima coincidencia antes de emitir el token: cada camino desde \texttt{o0} deletrea el lexema y solo los nodos de doble círculo aceptan, conservando lexema y familia. Por legibilidad se omiten las ramas directas de un carácter (\texttt{;} \texttt{!} \texttt{+} \texttt{<}), que aceptan directamente desde \texttt{o0} igual que las dibujadas; la coma no es un operador sino el delimitador \texttt{COMMA}. Las palabras \texttt{is} y \texttt{mod} requieren además la guarda de frontera de palabra.
+El trie representativo de operadores comparte prefijos para aplicar máxima coincidencia antes de emitir el token: cada camino desde \texttt{o0} deletrea el lexema y solo los nodos de doble círculo aceptan, conservando lexema y familia. Por legibilidad se omiten las ramas directas de un carácter (\texttt{;} \texttt{!} \texttt{+} \texttt{<}), además de las ramas de palabra \texttt{is} y \texttt{mod}; todas aceptan directamente desde \texttt{o0} igual que las dibujadas. La coma no es un operador sino el delimitador \texttt{COMMA}. Las palabras \texttt{is} y \texttt{mod} requieren además la guarda de frontera de palabra.
 
 \begin{figure}[H]
   \centering
@@ -461,10 +462,14 @@ Para minimizar el AFD como clasificador de tokens, la partición inicial separa 
     \draw[flecha] (E) -- node[below]{\code{=}} (F);
     \draw[flecha, dashed] (B) -- node[pos=0.25, above left]{\code{\textbackslash}} (Z);
     \draw[flecha, dashed] (C) -- node[pos=0.35, above]{\code{=, \textbackslash}} (Z);
-    \draw[flecha, dashed] (D) to[bend right=22] node[below]{\code{\textbackslash}} (Z);
-    \draw[flecha, dashed] (E) to[bend right=12] node[below]{\code{\textbackslash}} (Z);
+    \draw[flecha, dashed] (D) to[bend right=34] node[below]{\code{\textbackslash}} (Z);
+    \draw[flecha, dashed] (E) to[bend left=18] node[above]{\code{\textbackslash}} (Z);
     \draw[flecha, dashed] (F) -- node[above]{\code{=, \textbackslash}} (Z);
     \draw[flecha, dashed] (Z) to[loop right] node[right]{\code{=, \textbackslash}} (Z);
+    \node[below=0.22cm of B, align=center]{\code{OP\_EQ}};
+    \node[below=0.22cm of C, align=center]{\code{OP\_EQEQ}};
+    \node[below=0.22cm of E, align=center]{\code{OP\_NEQ}};
+    \node[below=0.22cm of F, align=center]{\code{OP\_NEQEQ}};
   \end{tikzpicture}
   }
   \caption{AFD mínimo etiquetado, con estado sumidero.}
