@@ -55,7 +55,7 @@ El programa válido produce 207 tokens, 0 errores y 48 entradas de tabla, con di
 
 El programa con errores produce 69 tokens, 12 errores y 28 entradas, con diagnósticos `UNTERMINATED_QUOTED_ATOM` en 3:6, `UNTERMINATED_STRING` en 5:6, `INVALID_CHARACTER('@')` en 7:6, `MALFORMED_NUMBER('5.')` en 8:6, `MALFORMED_NUMBER('.5')` en 9:6, `MALFORMED_NUMBER('1..2')` en 10:6, `INVALID_CHARACTER(':')` en 11:5, `INVALID_CHARACTER('?')` en 12:5, `INVALID_CHARACTER('\')` en 13:5, `INVALID_ESCAPE('\q')` en 14:8, `INVALID_ESCAPE('\q')` en 15:8 y `UNTERMINATED_BLOCK_COMMENT` en 17:1 hasta EOF.
 
-El PDF final se generó con `python tools/build_final_report.py`, que reutiliza `build_report_diagrams.py`, compone el informe desde Markdown y une el anexo mediante `pdfunite`. El entregable es `docs/informe/Tarea_Fernando_Valdes.pdf`. Se verificó con extracción de texto y conteo de páginas que los operadores `\==`, `=..`, `:-` y `?-` se ven correctamente y que las figuras son legibles.
+El PDF final se generó con `python tools/build_final_report.py`, que reutiliza `build_report_diagrams.py`, compone el informe desde Markdown y une el anexo mediante `pdfunite`. El entregable es `docs/informe/Fernandovaldestareaspark.pdf`. Se verificó con extracción de texto y conteo de páginas que los operadores `\==`, `=..`, `:-` y `?-` se ven correctamente y que las figuras son legibles.
 
 ## Anexo D. Lista de comprobación contra la rúbrica
 

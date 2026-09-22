@@ -24,12 +24,13 @@ python -m src.main tests/corpus/entradas/programa_con_errores.pl
 python -m src.main archivo.pl --tabla
 python -m src.main archivo.pl --show-attributes
 python tools/build_report_diagrams.py
-python tools/build_final_report.py
+/home/corvo/.codex/skills/latex-workflow/scripts/compile_latex.sh \\
+  docs/informe/Fernandovaldestareaspark.tex
 ```
 
 La salida normal lista un token por línea como `<TIPO, 'lexema', línea, columna>`. `--show-attributes` agrega la familia o el índice léxico y `--tabla` vuelca la tabla de lexemas. Los errores se imprimen en `stderr`; el código de salida es 1 si hubo errores y 0 si no.
 
-`build_report_diagrams.py` genera `docs/informe/automatas_appendix.pdf` como gráficos vectoriales con composición académica controlada. Las fuentes Mermaid (`.mmd`) conservan la especificación editable de estados y transiciones. `build_final_report.py` reutiliza el generador, compone el contenido canónico de `docs/informe/informe_tecnico.md` y produce `docs/informe/Tarea_Fernando_Valdes.pdf`. Requiere `reportlab` y `pdfunite`.
+`build_report_diagrams.py` genera `docs/informe/automatas_appendix.pdf` como gráficos vectoriales con composición académica controlada. Las fuentes Mermaid (`.mmd`) conservan la especificación editable de estados y transiciones. El informe canónico se edita en `docs/informe/Fernandovaldestareaspark.tex` y se compila con `blang/latex:ubuntu` mediante `latexmk`; el resultado queda en `docs/informe/Fernandovaldestareaspark.pdf` con tamaño carta y la estructura del formato oficial. `tools/build_final_report.py` se conserva como generador histórico de la versión ReportLab.
 
 ## Ejecución de pruebas
 
@@ -45,9 +46,9 @@ Resultado real de la integración: 85 pruebas aprobadas y cero fallos.
 
 - `src/`: código del analizador léxico (`tokens.py`, `errors.py`, `symbol_table.py`, `lexer.py`, `main.py`).
 - `tests/`: pruebas (`test_lexer.py`) y corpus (`corpus/validos/`, `corpus/invalidos/`, `corpus/entradas/` con `programa_valido.pl` y `programa_con_errores.pl`).
-- `docs/`: informe, autómatas y referencias (`docs/informe/01_especificacion_lexica.md`, `docs/informe/04_matriz_de_pruebas.md`, `docs/informe/informe_tecnico.md`, `docs/informe/referencias.md`, `docs/informe/anexos.md` y PDF final).
+- `docs/`: informe, autómatas y referencias (`docs/informe/Fernandovaldestareaspark.tex`, `docs/informe/01_especificacion_lexica.md`, `docs/informe/04_matriz_de_pruebas.md`, `docs/informe/informe_tecnico.md`, `docs/informe/referencias.md`, `docs/informe/anexos.md` y PDF final).
 - `tools/build_report_diagrams.py`: genera el anexo PDF con los diagramas de autómatas.
-- `tools/build_final_report.py`: compone el informe canónico, regenera el anexo y produce el PDF final.
+- `tools/build_final_report.py`: generador histórico ReportLab; el PDF entregable se compila desde el `.tex` con el helper de LaTeX.
 
 ## Formato de salida
 
