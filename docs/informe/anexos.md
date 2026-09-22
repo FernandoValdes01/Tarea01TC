@@ -65,7 +65,7 @@ Histórico: en una versión anterior el PDF se generó con `python tools/build_f
 | Modelado con autómatas (25)                 | Informe capítulo 5 con Figuras 1–9 integradas en TikZ y proceso único sobre `{=, ==, \=, \==}`: AFN con ε, tabla completa de subconjuntos y minimización del AFD etiquetado | Demostrado                     |
 | Implementación del lexer (25)               | `src/` completo con posiciones 1-based, máxima coincidencia y prioridades; salidas reales de ambos programas; comandos de ejecución en el capítulo 9 y el Anexo C                                                    | Demostrado                     |
 | Pruebas y errores léxicos (15)              | `tests/test_lexer.py` con 86 pruebas (27 válidas, 22 de prioridad, 16 inválidas, 12 transversales, 6 de archivos), dos archivos completos y `docs/informe/04_matriz_de_pruebas.md` con resultado real                | Demostrado                     |
-| Informe, repositorio y presentación (15)    | `docs/informe/informe_tecnico.md`, `referencias.md`, `anexos.md` y PDF final con diagramas; README actualizado; `git remote` real en el Anexo A | Demostrado |
+| Informe, repositorio y presentación (15)    | `docs/informe/Tarea_JefeGrupo_FernandoValdes.tex`, `referencias.md`, `anexos.md` y PDF final con diagramas; README actualizado; repositorio Git identificado en el Anexo A | Demostrado |
 | Pauta y fuentes de verdad                   | El enunciado y `docs/referencias/Formato Informe Tarea.pdf` fueron revisados; el PDF final incorpora la estructura, tablas y anexos solicitados | Demostrado |
 
 ## Anexo E. Estado final
