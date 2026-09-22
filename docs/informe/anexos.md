@@ -44,6 +44,7 @@ python -m compileall -q src tests tools
 uv run --with pytest python -m pytest -q
 python -m src.main tests/corpus/entradas/programa_valido.pl
 python -m src.main tests/corpus/entradas/programa_con_errores.pl
+docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/work -w /work/docs/informe blang/latex:ubuntu latexmk -pdf -interaction=nonstopmode -halt-on-error Tarea_JefeGrupo_FernandoValdes.tex
 git diff --check
 git status --short
 ```
@@ -61,7 +62,7 @@ Histórico: en una versión anterior el PDF se generó con `python tools/build_f
 | Dimensión y puntos                          | Evidencia                                                                                                                                                                                                            | Estado                         |
 | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
 | Especificación y expresiones regulares (20) | `docs/informe/01_especificacion_lexica.md` con catálogo, regex y convenciones; informe capítulos 4 y 6; `INTEGER_RE`, `REAL_RE`, clases ASCII y tabla de operadores coherentes en `src/lexer.py` | Demostrado                     |
-| Modelado con autómatas (25)                 | Informe capítulo 5 con Figuras 1–9, anexo gráfico en el PDF y proceso único sobre `{=, ==, \=, \==}`: AFN con ε, tabla completa de subconjuntos y minimización del AFD etiquetado | Demostrado                     |
+| Modelado con autómatas (25)                 | Informe capítulo 5 con Figuras 1–9 integradas en TikZ y proceso único sobre `{=, ==, \=, \==}`: AFN con ε, tabla completa de subconjuntos y minimización del AFD etiquetado | Demostrado                     |
 | Implementación del lexer (25)               | `src/` completo con posiciones 1-based, máxima coincidencia y prioridades; salidas reales de ambos programas; comandos de ejecución en el capítulo 9 y el Anexo C                                                    | Demostrado                     |
 | Pruebas y errores léxicos (15)              | `tests/test_lexer.py` con 86 pruebas (27 válidas, 22 de prioridad, 16 inválidas, 12 transversales, 6 de archivos), dos archivos completos y `docs/informe/04_matriz_de_pruebas.md` con resultado real                | Demostrado                     |
 | Informe, repositorio y presentación (15)    | `docs/informe/informe_tecnico.md`, `referencias.md`, `anexos.md` y PDF final con diagramas; README actualizado; `git remote` real en el Anexo A | Demostrado |
